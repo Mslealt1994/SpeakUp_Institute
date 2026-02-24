@@ -1,34 +1,24 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "./globals.css"
+import Header from "@/app/components/layout/Header"
+import Footer from "@/app/components/layout/Footer"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "SpeakUp Institute | Professional English Training",
-  description: "Comprehensive English training with a professional approach.",
-};
+export const metadata = {
+  title: "SpeakUp Institute",
+  description: "Professional English training ecosystem.",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en">
+      <body className="min-h-screen bg-gray-50 text-gray-900 antialiased">
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
-  );
+  )
 }
