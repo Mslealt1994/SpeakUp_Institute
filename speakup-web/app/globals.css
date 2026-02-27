@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand-blue: #0b3c5d;
+  --color-brand-green: #00ff0d;
+
+  --font-playfair: var(--font-playfair-next), serif;
+  --font-roboto: var(--font-roboto-next), sans-serif;
+}
