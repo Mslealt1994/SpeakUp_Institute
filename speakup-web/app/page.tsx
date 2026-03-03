@@ -1,4 +1,4 @@
-import Container from "@/app/components/ui/Container"
+import Container from "@/components/ui/Container"
 import Link from "next/link"
 
 export default function HomePage() {

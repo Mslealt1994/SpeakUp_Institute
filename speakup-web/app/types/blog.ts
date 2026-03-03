@@ -1,14 +1,22 @@
 export type BlogCategory = "founders-log" | "methodology" | "mindset";
 
-export interface BlogMetadata {
+interface BaseContent {
+  slug: string;
   title: string;
   description: string;
+  image?: string;
+}
+
+export interface Category extends BaseContent {
+  tag?: string;
+}
+
+export interface BlogMetadata extends BaseContent {
   date: string; 
   category: BlogCategory;
-  image: string;
+  image: string; 
   author: string;
-  readingTime?: number;
+  readingTime: number;
   draft: boolean;
-  slug: string;
   tags: string[];
 }
