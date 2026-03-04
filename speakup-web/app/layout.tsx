@@ -26,7 +26,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${playfair.variable} ${roboto.variable} h-full`}>
-      <body className="min-h-screen flex flex-col bg-gray-50 text-gray-900 antialiased font-roboto">
+      <body className="min-h-screen flex flex-col bg-brand-bg text-gray-900 antialiased font-roboto">
         <GeometricBackground />
         <Header />
         <main className="flex-1">{children}</main>

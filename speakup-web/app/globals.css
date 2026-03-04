@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
   --color-brand-blue: #0b3c5d;
@@ -6,4 +7,9 @@
 
   --font-playfair: var(--font-playfair-next), serif;
   --font-roboto: var(--font-roboto-next), sans-serif;
+}
+
+.prose li::before,
+.prose li::marker {
+  color: #00ff0d !important;
 }
