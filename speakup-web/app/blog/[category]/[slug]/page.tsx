@@ -90,7 +90,7 @@ export default async function PostPage({ params }: PageProps) {
         {/* ── Contenido MDX ── */}
         <div className="prose prose-slate lg:prose-xl max-w-none
                         prose-headings:font-playfair prose-headings:text-brand-blue prose-headings:font-black
-                        prose-p:font-roboto prose-p:text-slate-700 prose-p:leading-relaxed
+                        prose-p:font-roboto prose-p:text-slate-800 prose-p:leading-relaxed
                         prose-strong:text-brand-blue
                         prose-blockquote:border-l-brand-green prose-blockquote:bg-slate-50
                         prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl
