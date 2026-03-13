@@ -30,7 +30,7 @@ export default function HomePage() {
               </Link>
 
               <Link
-                href="/roadmap"
+                href="https://github.com/users/Mslealt1994/projects/5"
                 className="w-full px-7 py-3 text-center rounded-md border bg-brand-blue text-white font-medium transition-colors duration-200 hover:bg-brand-blue hover:text-white sm:w-auto"
               >
                 Explorar el roadmap
