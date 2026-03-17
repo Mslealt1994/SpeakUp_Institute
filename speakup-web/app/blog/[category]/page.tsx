@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Container from "@/components/ui/Container";
-import {CATEGORY_LABELS, CATEGORY_SUBTITLES, VALID_CATEGORIES } from "@/lib/blog";
+import { CATEGORY_LABELS, CATEGORY_SUBTITLES, VALID_CATEGORIES } from "@/lib/blog";
 import { getPostsByCategory } from "@/lib/mdx";
 import { BlogCard } from "@/components/blog/Card";
 import type { BlogCategory } from "@/app/types/blog";
@@ -33,10 +33,8 @@ export function generateStaticParams() {
 export default async function CategoryPage({ params }: PageProps) {
   const { category } = await params;
 
-  // Validación type-safe — si la URL no es una categoría conocida → 404
   if (!isBlogCategory(category)) notFound();
 
-  // A partir de aquí TypeScript sabe que category: BlogCategory
   const posts    = await getPostsByCategory(category);
   const title    = CATEGORY_LABELS[category];
   const subtitle = CATEGORY_SUBTITLES[category];
@@ -47,23 +45,20 @@ export default async function CategoryPage({ params }: PageProps) {
       className="w-full pt-8 pb-10 md:pt-12 md:pb-16"
     >
       <Container>
-        {/* Header */}
+
+        {/* ── Header ── */}
         <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
-          <h1
-            id="category-heading"
-            className="font-playfair font-black text-brand-blue tracking-tighter leading-tight
-                       text-4xl sm:text-5xl md:text-6xl mb-4"
-          >
+          <h1 id="category-heading" className="mb-4">
             {title}
           </h1>
-          <p className="font-roboto font-bold text-slate-600 leading-relaxed text-base md:text-lg">
+          <p className="lead text-gray-medium">
             {subtitle}
           </p>
         </div>
 
-        {/* Posts */}
+        {/* ── Posts ── */}
         {posts.length === 0 ? (
-          <p className="text-center font-roboto text-slate-400">
+          <p className="text-center text-gray-medium">
             No hay artículos publicados en esta categoría todavía.
           </p>
         ) : (
@@ -78,6 +73,7 @@ export default async function CategoryPage({ params }: PageProps) {
             ))}
           </ul>
         )}
+
       </Container>
     </section>
   );

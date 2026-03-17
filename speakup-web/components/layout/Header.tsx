@@ -8,8 +8,10 @@ import { useState } from "react";
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { href: "/blog", label: "Blog" },
-  { href: "/about", label: "Conócenos" },
+  { href: "#", label: "Cursos"  },
+  { href: "#", label: "Skill Lab"  },
+  { href: "/blog",  label: "Blog"      },
+  { href: "#", label: "Conócenos" },
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -19,18 +21,18 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinkClass = (path: string) =>
-    `px-4 py-2 rounded-full text-sm font-black font-roboto transition-colors ${
+    `px-4 py-2 rounded-full text-sm font-bold transition-colors ${
       pathname === path
-        ? "bg-gray-100 text-brand-green"
-        : "text-gray-700 hover:text-brand-green"
+        ? "bg-soft text-primary"
+        : "text-main hover:text-primary"
     }`;
 
   return (
-    <div className="flex justify-center mt-6 px-4">
-      <header
-        className="w-full max-w-6xl bg-white/70 shadow-md rounded-full
-                         px-6 py-3 flex items-center justify-between"
-      >
+    <div className="flex justify-center mt-4 px-4">
+      <header className="w-full max-w-6xl bg-white/70 shadow-md rounded-full
+                         px-6 py-3 flex items-center justify-between">
+
+        {/* ── Logo ── */}
         <Link href="/" className="flex items-center shrink-0">
           <Image
             src="/brand/logo-horizontal.svg"
@@ -50,9 +52,9 @@ export default function Header() {
           ))}
           <Link
             href="/contact"
-            className="ml-4 px-6 py-2 rounded-full text-sm font-black uppercase
-                       tracking-wide bg-sky-600 text-white font-roboto
-                       transition-transform hover:scale-105"
+            className="ml-4 px-6 py-2 rounded-full text-sm font-bold uppercase
+                       tracking-wide bg-secondary text-white
+                       transition-transform hover:scale-105 hover:bg-secondary-dark"
           >
             Contáctanos
           </Link>
@@ -65,27 +67,19 @@ export default function Header() {
           aria-label="Toggle menu"
           aria-expanded={isOpen}
         >
-          <span
-            className={`block h-0.5 w-6 bg-brand-blue transition-transform duration-300
-                            ${isOpen ? "translate-y-2 rotate-45" : ""}`}
-          />
-          <span
-            className={`block h-0.5 w-6 bg-brand-blue transition-opacity duration-300
-                            ${isOpen ? "opacity-0" : ""}`}
-          />
-          <span
-            className={`block h-0.5 w-6 bg-brand-blue transition-transform duration-300
-                            ${isOpen ? "-translate-y-2 -rotate-45" : ""}`}
-          />
+          <span className={`block h-0.5 w-6 bg-secondary transition-transform duration-300
+                            ${isOpen ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-secondary transition-opacity duration-300
+                            ${isOpen ? "opacity-0" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-secondary transition-transform duration-300
+                            ${isOpen ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </header>
 
       {/* ── Mobile menu ── */}
       {isOpen && (
-        <div
-          className="absolute top-24 left-4 right-4 bg-white rounded-2xl shadow-lg
-                        p-6 flex flex-col gap-3 md:hidden z-50"
-        >
+        <div className="absolute top-24 left-4 right-4 bg-white rounded-2xl shadow-lg
+                        p-6 flex flex-col gap-3 md:hidden z-50">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
@@ -98,9 +92,9 @@ export default function Header() {
           ))}
           <Link
             href="/contact"
-            className="mt-2 px-6 py-3 rounded-full text-sm font-black uppercase tracking-wide
-                       text-center bg-sky-600 text-white font-roboto
-                       transition-transform hover:scale-105"
+            className="mt-2 px-6 py-3 rounded-full text-sm font-bold uppercase tracking-wide
+                       text-center bg-secondary text-white
+                       transition-transform hover:scale-105 hover:bg-secondary-dark"
             onClick={() => setIsOpen(false)}
           >
             Contáctanos

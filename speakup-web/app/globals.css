@@ -1,15 +1,213 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@theme {
-  --color-brand-blue: #0b3c5d;
-  --color-brand-green: #00ff0d;
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOKENS DE DISEÑO — SpeakUp Institute
+   Fuente única de verdad para colores, tipografía y escala.
+   En Tailwind v4 los tokens van en @theme y se convierten
+   automáticamente en clases utilitarias (bg-primary, text-secondary, etc.)
+───────────────────────────────────────────────────────────────────────────── */
 
-  --font-playfair: var(--font-playfair-next), serif;
-  --font-roboto: var(--font-roboto-next), sans-serif;
+@theme {
+
+  /* ── Colores Primarios (Identidad) ── */
+  --color-primary:       #58CC02; /* Verde SpeakUp — CTA, éxito, acentos       */
+  --color-primary-dark:  #46A302; /* Verde SpeakUp Hover                        */
+
+  /* ── Colores de Acento ── */
+  --color-accent:        #16DACB; /* Cyan — enlaces, iconos, barras de progreso */
+
+  /* ── Colores del Sistema (Estructura) ── */
+  --color-secondary:     #0B3C5D; /* Azul Institucional — H1-H6, CTA secundario */
+  --color-secondary-dark:#082D46; /* Azul Institucional Hover                   */
+  --color-main:          #364153; /* Gris Medianoche — texto de cuerpo          */
+
+  /* ── Fondos y Superficies ── */
+  --color-soft:          #F3F4F6; /* Gris Hielo — fondos alternos, cards        */
+  --color-white:         #FFFFFF; /* Fondo principal, texto sobre oscuros        */
+
+  /* ── Bordes y Divisores ── */
+  --color-line:          #E5E7EB; /* Gris Plata — bordes, divisores, inputs     */
+
+  /* ── Texto Secundario ── */
+  --color-gray-medium:   #666666; /* Gris Instituto — subtítulos, "Institute"   */
+
+  /* ── Tipografía ──
+     Las variables --font-* conectan con next/font inyectado en layout.tsx.
+     font-heading → Inter       (títulos, UI)
+     font-body    → Plus Jakarta Sans (lectura, párrafos)
+  */
+  --font-heading: var(--font-inter),         'Inter',            sans-serif;
+  --font-body:    var(--font-jakarta),       'Plus Jakarta Sans', sans-serif;
+
 }
 
-.prose li::before,
-.prose li::marker {
-  color: #00ff0d !important;
+/* ─────────────────────────────────────────────────────────────────────────────
+   ESTILOS BASE
+   Se aplican globalmente sin necesidad de clases.
+   Establece la tipografía y colores por defecto del documento.
+───────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+
+  /* Tipografía base del documento */
+  html {
+    font-family: var(--font-body);
+    color: var(--color-main);
+    background-color: var(--color-white);
+  }
+
+  /* ── Escala de Headings ──
+     Todos usan font-heading (Inter), italic y color secondary.
+     Los tamaños siguen la escala definida en el sistema de diseño.
+  */
+
+  h1 {
+    font-family:   var(--font-heading);
+    font-weight:   800;
+    font-style:    italic;
+    line-height:   1.1;
+    color:         var(--color-secondary);
+    /* Mobile: 36px | Tablet: 48px | Desktop: 60px */
+    font-size:     clamp(2.25rem, 5vw, 3.75rem);
+  }
+
+  h2 {
+    font-family:   var(--font-heading);
+    font-weight:   700;
+    font-style:    italic;
+    line-height:   1.2;
+    color:         var(--color-secondary);
+    /* Mobile: 30px | Desktop: 36px */
+    font-size:     clamp(1.875rem, 3vw, 2.25rem);
+  }
+
+  h3 {
+    font-family:   var(--font-heading);
+    font-weight:   700;
+    font-style:    normal;
+    color:         var(--color-secondary);
+    /* Mobile: 20px | Desktop: 24px */
+    font-size:     clamp(1.25rem, 2vw, 1.5rem);
+  }
+
+  h4 {
+    font-family:   var(--font-heading);
+    font-weight:   600;
+    font-style:    normal;
+    color:         var(--color-secondary);
+    font-size:     1.25rem; /* 20px — fixed */
+  }
+
+  h5 {
+    font-family:   var(--font-heading);
+    font-weight:   700;
+    font-style:    normal;
+    color:         var(--color-secondary);
+    font-size:     1rem; /* 16px — fixed */
+  }
+
+  h6 {
+    font-family:   var(--font-heading);
+    font-weight:   700;
+    font-style:    normal;
+    color:         var(--color-gray-medium);
+    font-size:     0.875rem; /* 14px — fixed */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Párrafos ── */
+  p {
+    font-family:  var(--font-body);
+    font-weight:  600;
+    line-height:  1.6;
+    color:        var(--color-main);
+    font-size:    1rem; /* 16px base */
+  }
+
+  /* Párrafo introductorio — más grande */
+  p.lead {
+    font-size: 1.125rem; /* 18px */
+  }
+
+  /* ── Bordes por defecto ── */
+  * {
+    border-color: var(--color-line);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PROSE — Estilos para contenido MDX
+   Sobreescribe los defaults de @tailwindcss/typography
+   para que el contenido del blog use el sistema de diseño.
+───────────────────────────────────────────────────────────────────────────── */
+
+.prose {
+
+  /* Headings dentro del contenido */
+  :is(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-heading);
+    font-style:  italic;
+    color:       var(--color-secondary);
+  }
+
+  /* Párrafos del contenido */
+  p {
+    font-family: var(--font-body);
+    color:       var(--color-main);
+    line-height: 1.8;
+  }
+
+  /* Negrita */
+  strong {
+    color:       var(--color-secondary);
+    font-weight: 900;
+  }
+
+  /* Blockquote */
+  blockquote {
+    border-left-color: var(--color-primary);
+    background-color:  var(--color-soft);
+    border-radius:     0 0.75rem 0.75rem 0;
+    padding:           0.75rem 1.5rem;
+    font-style:        normal;
+    color:             var(--color-main);
+  }
+
+  /* Bullets verdes */
+  :is(ul > li, ol > li)::marker {
+    color: var(--color-primary);
+  }
+
+  /* Código inline */
+  code {
+    color:            var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    padding:          0.15rem 0.4rem;
+    border-radius:    0.25rem;
+    font-size:        0.875em;
+  }
+
+  /* Bloque de código */
+  pre {
+    background-color: var(--color-secondary);
+    border-radius:    1rem;
+  }
+
+  /* Imágenes */
+  img {
+    border-radius: 1rem;
+    box-shadow:    0 10px 30px rgba(0,0,0,0.1);
+  }
+
+  /* Links */
+  a {
+    color:           var(--color-accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
