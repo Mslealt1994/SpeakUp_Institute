@@ -8,11 +8,26 @@ import { useState } from "react";
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { href: "#", label: "Cursos"  },
-  { href: "#", label: "Skill Lab"  },
-  { href: "/blog",  label: "Blog"      },
-  { href: "#", label: "Conócenos" },
+  { href: "#",     label: "Cursos"    },
+  { href: "#",     label: "Skill Lab" },
+  { href: "/blog", label: "Blog"      },
+  { href: "#",     label: "Conócenos" },
 ];
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Determina si un link de navegación debe mostrarse como activo.
+ * - Links con href="#" nunca son activos.
+ * - Usa startsWith para activar el link en rutas anidadas.
+ *   Ej: "/blog" queda activo en "/blog/founders-log/mi-post"
+ * - El guard `+ "/"` evita falsos positivos.
+ *   Ej: "/blog" NO activa "/blog-tips"
+ */
+function isActivePath(pathname: string, path: string): boolean {
+  if (path === "#") return false;
+  return pathname === path || pathname.startsWith(path + "/");
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -22,7 +37,7 @@ export default function Header() {
 
   const navLinkClass = (path: string) =>
     `px-4 py-2 rounded-full text-sm font-bold transition-colors ${
-      pathname === path
+      isActivePath(pathname, path)
         ? "bg-soft text-primary"
         : "text-main hover:text-primary"
     }`;
@@ -39,22 +54,22 @@ export default function Header() {
             alt="SpeakUp Institute"
             width={155}
             height={40}
-            className="h-10 w-auto"
+            className="h-10 w-auto object-contain"
           />
         </Link>
 
         {/* ── Desktop nav ── */}
         <nav className="hidden md:flex items-center gap-2">
           {NAV_LINKS.map(({ href, label }) => (
-            <Link key={href} href={href} className={navLinkClass(href)}>
+            <Link key={label} href={href} className={navLinkClass(href)}>
               {label}
             </Link>
           ))}
           <Link
-            href="/contact"
+            href="#"
             className="ml-4 px-6 py-2 rounded-full text-sm font-bold uppercase
                        tracking-wide bg-secondary text-white
-                       transition-transform hover:scale-105 hover:bg-secondary-dark"
+                       transition-all hover:scale-[1.03] hover:bg-secondary-dark"
           >
             Contáctanos
           </Link>
@@ -82,7 +97,7 @@ export default function Header() {
                         p-6 flex flex-col gap-3 md:hidden z-50">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
-              key={href}
+              key={label}
               href={href}
               className={navLinkClass(href)}
               onClick={() => setIsOpen(false)}
@@ -91,10 +106,10 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="/contact"
+            href="#"
             className="mt-2 px-6 py-3 rounded-full text-sm font-bold uppercase tracking-wide
                        text-center bg-secondary text-white
-                       transition-transform hover:scale-105 hover:bg-secondary-dark"
+                       transition-all hover:scale-[1.03] hover:bg-secondary-dark"
             onClick={() => setIsOpen(false)}
           >
             Contáctanos

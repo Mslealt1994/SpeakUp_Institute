@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Category, BlogMetadata } from "@/app/types/blog";
+import Button from "@/components/ui/Button";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -11,7 +12,7 @@ import type { Category, BlogMetadata } from "@/app/types/blog";
  */
 type BlogCardProps =
   | { mode: "category"; data: Category }
-  | { mode: "post";     data: BlogMetadata };
+  | { mode: "post"; data: BlogMetadata };
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
@@ -32,12 +33,10 @@ export function BlogCard(props: BlogCardProps) {
   const { slug, title, description } = data;
 
   const imageSrc = data.image ?? `/blog/${slug}.jpeg`;
-  const href     = isPost
+  const href = isPost
     ? `/blog/${(data as BlogMetadata).category}/${slug}`
     : `/blog/${slug}`;
-  const tag      = isPost
-    ? (data as BlogMetadata).category
-    : (data as Category).tag;
+  const tag = isPost ? (data as BlogMetadata).category : (data as Category).tag;
 
   return (
     <Link
@@ -61,9 +60,11 @@ export function BlogCard(props: BlogCardProps) {
         />
 
         {tag && (
-          <span className="absolute top-3 left-3 text-[10px] font-bold tracking-widest
+          <span
+            className="absolute top-3 left-3 text-[10px] font-bold tracking-widest
                            uppercase text-white bg-secondary/80 backdrop-blur-sm
-                           px-2.5 py-1 rounded-full z-10">
+                           px-2.5 py-1 rounded-full z-10"
+          >
             {tag}
           </span>
         )}
@@ -71,7 +72,6 @@ export function BlogCard(props: BlogCardProps) {
 
       {/* ── Contenido ── */}
       <div className="flex flex-col gap-2 p-4 flex-1">
-
         {/* H3 — hereda estilos de globals.css */}
         <h3 className="text-xl leading-snug group-hover:opacity-80 transition-opacity line-clamp-2">
           {title}
@@ -93,15 +93,14 @@ export function BlogCard(props: BlogCardProps) {
         )}
 
         {/* CTA */}
+
         <div className="pt-2 mt-auto">
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full
-                           bg-primary text-white text-xs font-bold
-                           group-hover:bg-primary-dark transition-colors">
+          <Button variant="primary" className="inline-flex text-xs">
             {isPost ? "Leer artículo" : "Explorar"}
             <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform duration-200">
               →
             </span>
-          </span>
+          </Button>
         </div>
       </div>
     </Link>
