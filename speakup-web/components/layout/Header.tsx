@@ -11,7 +11,7 @@ const NAV_LINKS = [
   { href: "#",     label: "Cursos"    },
   { href: "#",     label: "Skill Lab" },
   { href: "/blog", label: "Blog"      },
-  { href: "#",     label: "Conócenos" },
+  { href: "/about",     label: "Conócenos" },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

@@ -8,14 +8,15 @@ const cn = (...inputs: Parameters<typeof clsx>) => twMerge(clsx(inputs));
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export type ButtonVariant =
-  | "primary"    // Verde SpeakUp — CTA, conversión
-  | "secondary"  // Azul Institucional — exploración, confianza
-  | "warning"    // Ámbar — atención sin castigo
-  | "danger"     // Rojo — acción irreversible
-  | "neutral"    // Gris oscuro — opciones de sistema
-  | "ghost"      // Transparente — jerarquía mínima
-  | "disabled"   // Gris claro — bloqueado lógicamente
-  | "social";    // Blanco con borde — login social
+  | "primary"      // Verde SpeakUp — CTA, conversión
+  | "secondary"    // Azul Institucional — exploración, confianza
+  | "warning"      // Ámbar — atención sin castigo
+  | "danger"       // Rojo — acción irreversible
+  | "neutral"      // Gris oscuro — opciones de sistema
+  | "ghost"        // Transparente — jerarquía mínima, sobre fondos claros
+  | "ghost-light"  // Transparente — jerarquía mínima, sobre fondos oscuros
+  | "disabled"     // Gris claro — bloqueado lógicamente
+  | "social";      // Blanco con borde — login social
 
 interface BaseProps {
   variant: ButtonVariant;
@@ -42,26 +43,27 @@ type ButtonProps =
  * Cada variante tiene tres capas:
  * 1. Color base
  * 2. hover:bg-* — cambia el fondo al hacer hover
- * 3. hover:scale-105 — escala sutil 
+ * 3. hover:scale-105 — escala sutil
  *
  * La sombra base va en BASE para que todos los botones la hereden.
- * disabled y ghost no escalan — no tiene sentido semántico.
+ * disabled, ghost y ghost-light no escalan — no tiene sentido semántico.
  */
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary:   "bg-primary   text-white hover:bg-primary-dark   hover:scale-105",
-  secondary: "bg-secondary text-white hover:bg-secondary-dark hover:scale-105",
-  warning:   "bg-amber-500 text-white hover:bg-amber-600      hover:scale-105",
-  danger:    "bg-red-600   text-white hover:bg-red-700        hover:scale-105",
-  neutral:   "bg-main      text-white hover:bg-gray-800       hover:scale-105",
-  ghost:     "bg-transparent text-secondary underline-offset-4 hover:underline shadow-none",
-  disabled:  "bg-line text-gray-medium cursor-not-allowed shadow-none pointer-events-none",
-  social:    "bg-white text-main border border-line hover:bg-soft hover:scale-105",
+  primary:       "bg-primary   text-white hover:bg-primary-dark   hover:scale-105",
+  secondary:     "bg-secondary text-white hover:bg-secondary-dark hover:scale-105",
+  warning:       "bg-amber-500 text-white hover:bg-amber-600      hover:scale-105",
+  danger:        "bg-red-600   text-white hover:bg-red-700        hover:scale-105",
+  neutral:       "bg-main      text-white hover:bg-gray-800       hover:scale-105",
+  ghost:         "bg-transparent text-secondary underline-offset-4 hover:underline shadow-none",
+  "ghost-light": "bg-transparent text-white underline-offset-4 hover:text-white/80 hover:underline shadow-none",
+  disabled:      "bg-line text-gray-medium cursor-not-allowed shadow-none pointer-events-none",
+  social:        "bg-white text-main border border-line hover:bg-secondary hover:text-white hover:scale-105",
 };
 
 // ─── Base classes ─────────────────────────────────────────────────────────────
 /**
  * shadow-md → sombra sutil presente en todos los botones por defecto.
- * Las variantes ghost y disabled la sobreescriben con shadow-none via twMerge.
+ * Las variantes ghost, ghost-light y disabled la sobreescriben con shadow-none via twMerge.
  */
 const BASE = [
   "inline-flex items-center justify-center gap-2",

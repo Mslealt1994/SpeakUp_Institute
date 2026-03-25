@@ -24,7 +24,7 @@ import {
   Route,
   Milestone,
   Zap,
-  BrainCircuit,
+  Brain,
   BookOpenCheck,
   Mic2,
   Languages,
@@ -80,7 +80,7 @@ export const SpeakUpIcons = {
   quickTip:     Zap,
 
   /** Conceptos de estructura mental y lógica */
-  logic:        BrainCircuit,
+  logic:        Brain,
 
   /** Lecciones completadas y progreso de lectura */
   lessonDone:   BookOpenCheck,

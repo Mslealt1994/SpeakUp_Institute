@@ -1,23 +1,50 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
 export default function GeometricBackground() {
+  const [yOffset, setYOffset] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detecta si es móvil
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    const handleScroll = () => {
+      if (!isMobile) {
+        setYOffset(window.scrollY * -0.2);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isMobile]);
+
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-
-      {/* Blobs de color — esquinas */}
-      <div className="absolute -top-1 -right-1 w-48 h-48 rotate-45 rounded-2xl bg-linear-0 from-sky-950 to-sky-500 blur-2xl sm:w-72 sm:h-72" />
-      <div className="absolute -bottom-1 -left-1 w-48 h-48 rotate-45 rounded-2xl bg-linear-0 from-green-400 to-green-950 blur-2xl sm:w-72 sm:h-72" />
-
-      {/* Rombos decorativos — derecha */}
-      <div className="absolute top-[20%] -right-16 opacity-70 hidden sm:block">
-        <div className="absolute top-20 right-12 w-40 h-40 rotate-45 border-2 border-sky-400/35 rounded-2xl" />
-        <div className="absolute top-52 right-36 w-16 h-16 rotate-45 border-2 border-sky-500/45 rounded-lg" />
+      <div
+        className="absolute w-full top-0"
+        style={{
+          transform: isMobile ? "translateY(0)" : `translateY(${yOffset}px)`,
+          transition: "transform 0.1s linear",
+        }}
+      >
+        <Image
+          src="/background.svg"
+          alt=""
+          width={1920}
+          height={1080}
+          priority
+          className="w-full h-screen object-cover md:h-auto md:object-contain block"
+        />
       </div>
-
-      {/* Rombos decorativos — izquierda */}
-      <div className="absolute bottom-[15%] -left-20 opacity-70 hidden sm:block">
-        <div className="absolute bottom-24 left-28 w-44 h-44 rotate-45 border-2 border-green-400/35 rounded-2xl" />
-        <div className="absolute bottom-56 left-52 w-20 h-20 rotate-45 border-2 border-green-400/45 rounded-lg" />
-      </div>
-
     </div>
-  )
+  );
 }
