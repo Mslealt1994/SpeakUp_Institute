@@ -59,7 +59,6 @@ export default function AboutPage() {
           alt="Persona representando el aprendizaje de inglés"
           fill
           priority
-          unoptimized
           className="object-cover object-left -z-10"
         />
         <div
@@ -104,8 +103,9 @@ export default function AboutPage() {
               alt=""
               aria-hidden="true"
               width={128}
-              height={128}
-              className="max-h-32 w-auto object-contain"
+              height={0}
+              style={{ height: "auto" }}
+              className="object-contain"
             />
           </div>
           <div className="text-center space-y-6">
@@ -133,8 +133,9 @@ export default function AboutPage() {
               alt=""
               aria-hidden="true"
               width={128}
-              height={128}
-              className="max-h-32 w-auto object-contain"
+              height={0}
+              style={{ height: "auto" }}
+              className="object-contain"
             />
           </div>
         </Container>
