@@ -66,7 +66,7 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="#"
+            href="/contact"
             className="ml-4 px-6 py-2 rounded-full text-sm font-bold uppercase
                        tracking-wide bg-secondary text-white
                        transition-all hover:scale-[1.03] hover:bg-secondary-dark"
@@ -106,7 +106,7 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="#"
+            href="/contact"
             className="mt-2 px-6 py-3 rounded-full text-sm font-bold uppercase tracking-wide
                        text-center bg-secondary text-white
                        transition-all hover:scale-[1.03] hover:bg-secondary-dark"

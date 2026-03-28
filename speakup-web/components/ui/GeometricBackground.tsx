@@ -44,6 +44,8 @@ export default function GeometricBackground() {
           priority
           className="w-full h-screen object-cover md:h-auto md:object-contain block"
         />
+        {/* Overlay para blur y desaturación */}
+        <div className="absolute inset-0 bg-gray-medium/15 backdrop-blur-sm"></div>
       </div>
     </div>
   );

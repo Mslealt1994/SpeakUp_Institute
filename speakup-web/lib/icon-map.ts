@@ -55,6 +55,8 @@ import {
   Lock,
   CheckCircle2,
   AlertCircle,
+  Handshake,
+  Gem,
 } from "lucide-react";
 
 // ─── Librería organizada por categoría ───────────────────────────────────────
@@ -162,6 +164,12 @@ export const SpeakUpIcons = {
 
   /** Advertencia — errores o notificaciones → text-amber-500 */
   warning:      AlertCircle,
+
+  /** Alianzas estratégicas — Colaboración con creadores/educadores */
+  alliance:     Handshake,
+
+  /** Mecenazgo — Usuarios que financian y catalizan la visión */
+  diamond:     Gem,
 
 } as const;
 

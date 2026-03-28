@@ -12,28 +12,32 @@ import Footer from "@/components/layout/Footer";
 // definidos en globals.css
 
 const inter = Inter({
-  subsets:  ["latin"],
-  style:    ["normal", "italic"],
+  subsets: ["latin"],
+  style: ["normal", "italic"],
   variable: "--font-inter",
-  display:  "swap",
+  display: "swap",
 });
 
 const jakarta = Plus_Jakarta_Sans({
-  subsets:  ["latin"],
+  subsets: ["latin"],
   variable: "--font-jakarta",
-  display:  "swap",
+  display: "swap",
 });
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
-  title:       "SpeakUp Institute",
+  title: "SpeakUp Institute",
   description: "Professional English training ecosystem.",
 };
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="es" className={`${inter.variable} ${jakarta.variable} h-full`}>
       <body className="min-h-screen flex flex-col text-main antialiased">

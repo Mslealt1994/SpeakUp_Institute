@@ -11,34 +11,34 @@
 @theme {
 
   /* ── Colores Primarios (Identidad) ── */
-  --color-primary:       #58CC02; /* Verde SpeakUp — CTA, éxito, acentos       */
-  --color-primary-dark:  #46A302; /* Verde SpeakUp Hover                        */
+  --color-primary:        #58CC02; /* Verde SpeakUp — CTA, éxito, acentos       */
+  --color-primary-dark:   #46A302; /* Verde SpeakUp Hover                        */
 
   /* ── Colores de Acento ── */
-  --color-accent:        #16DACB; /* Cyan — enlaces, iconos, barras de progreso */
+  --color-accent:         #16DACB; /* Cyan — enlaces, iconos, barras de progreso */
 
   /* ── Colores del Sistema (Estructura) ── */
-  --color-secondary:     #0B3C5D; /* Azul Institucional — H1-H6, CTA secundario */
-  --color-secondary-dark:#082D46; /* Azul Institucional Hover                   */
-  --color-main:          #364153; /* Gris Medianoche — texto de cuerpo          */
+  --color-secondary:      #0B3C5D; /* Azul Institucional — H1-H6, CTA secundario */
+  --color-secondary-dark: #082D46; /* Azul Institucional Hover                   */
+  --color-main:           #364153; /* Gris Medianoche — texto de cuerpo          */
 
   /* ── Fondos y Superficies ── */
-  --color-soft:          #F3F4F6; /* Gris Hielo — fondos alternos, cards        */
-  --color-white:         #FFFFFF; /* Fondo principal, texto sobre oscuros        */
+  --color-soft:           #F3F4F6; /* Gris Hielo — fondos alternos, cards        */
+  --color-white:          #FFFFFF; /* Fondo principal, texto sobre oscuros        */
 
   /* ── Bordes y Divisores ── */
-  --color-line:          #E5E7EB; /* Gris Plata — bordes, divisores, inputs     */
+  --color-line:           #E5E7EB; /* Gris Plata — bordes, divisores, inputs     */
 
   /* ── Texto Secundario ── */
-  --color-gray-medium:   #666666; /* Gris Instituto — subtítulos, "Institute"   */
+  --color-gray-medium:    #666666; /* Gris Instituto — subtítulos, "Institute"   */
 
   /* ── Tipografía ──
      Las variables --font-* conectan con next/font inyectado en layout.tsx.
-     font-heading → Inter       (títulos, UI)
+     font-heading → Inter            (títulos, UI)
      font-body    → Plus Jakarta Sans (lectura, párrafos)
   */
-  --font-heading: var(--font-inter),         'Inter',            sans-serif;
-  --font-body:    var(--font-jakarta),       'Plus Jakarta Sans', sans-serif;
+  --font-heading: var(--font-inter),   'Inter',             sans-serif;
+  --font-body:    var(--font-jakarta), 'Plus Jakarta Sans', sans-serif;
 
 }
 
@@ -52,8 +52,8 @@
 
   /* Tipografía base del documento */
   html {
-    font-family: var(--font-body);
-    color: var(--color-main);
+    font-family:      var(--font-body);
+    color:            var(--color-main);
     background-color: var(--color-white);
   }
 
@@ -63,78 +63,90 @@
   */
 
   h1 {
-    font-family:   var(--font-heading);
-    font-weight:   800;
-    font-style:    italic;
-    line-height:   1.1;
-    color:         var(--color-secondary);
-    /* Mobile: 36px | Tablet: 48px | Desktop: 60px */
-    font-size:     clamp(2.25rem, 5vw, 3.75rem);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-style:  italic;
+    line-height: 1.1;
+    color:       var(--color-secondary);
+    font-size:   clamp(2.25rem, 5vw, 3.75rem); /* Mobile: 36px | Desktop: 60px */
   }
 
   h2 {
-    font-family:   var(--font-heading);
-    font-weight:   700;
-    font-style:    italic;
-    line-height:   1.2;
-    color:         var(--color-secondary);
-    /* Mobile: 30px | Desktop: 36px */
-    font-size:     clamp(1.875rem, 3vw, 2.25rem);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-style:  italic;
+    line-height: 1.2;
+    color:       var(--color-secondary);
+    font-size:   clamp(1.875rem, 3vw, 2.25rem); /* Mobile: 30px | Desktop: 36px */
   }
 
   h3 {
-    font-family:   var(--font-heading);
-    font-weight:   700;
-    font-style:    normal;
-    color:         var(--color-secondary);
-    /* Mobile: 20px | Desktop: 24px */
-    font-size:     clamp(1.25rem, 2vw, 1.5rem);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-style:  normal;
+    color:       var(--color-secondary);
+    font-size:   clamp(1.25rem, 2vw, 1.5rem); /* Mobile: 20px | Desktop: 24px */
   }
 
   h4 {
-    font-family:   var(--font-heading);
-    font-weight:   600;
-    font-style:    normal;
-    color:         var(--color-secondary);
-    font-size:     1.25rem; /* 20px — fixed */
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-style:  normal;
+    color:       var(--color-secondary);
+    font-size:   1.25rem; /* 20px — fixed */
   }
 
   h5 {
-    font-family:   var(--font-heading);
-    font-weight:   700;
-    font-style:    normal;
-    color:         var(--color-secondary);
-    font-size:     1rem; /* 16px — fixed */
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-style:  normal;
+    color:       var(--color-secondary);
+    font-size:   1rem; /* 16px — fixed */
   }
 
   h6 {
-    font-family:   var(--font-heading);
-    font-weight:   700;
-    font-style:    normal;
-    color:         var(--color-gray-medium);
-    font-size:     0.875rem; /* 14px — fixed */
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-family:     var(--font-heading);
+    font-weight:     700;
+    font-style:      normal;
+    color:           var(--color-gray-medium);
+    font-size:       0.875rem; /* 14px — fixed */
+    text-transform:  uppercase;
+    letter-spacing:  0.05em;
   }
 
-  /* ── Párrafos ── */
+  /* ── Párrafos ──
+     font-weight: 400 como base global — 600 es semibold y demasiado
+     pesado para hints, errores y cualquier <p> secundario.
+     Usa font-semibold en Tailwind donde necesites párrafos más gruesos.
+  */
   p {
-    font-family:  var(--font-body);
-    font-weight:  600;
-    line-height:  1.6;
-    color:        var(--color-main);
-    font-size:    1rem; /* 16px base */
-  }
-
-  /* Párrafo introductorio — más grande */
-  p.lead {
-    font-size: 1.125rem; /* 18px */
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.6;
+    color:       var(--color-main);
+    font-size:   1rem; /* 16px base */
   }
 
   /* ── Bordes por defecto ── */
   * {
     border-color: var(--color-line);
   }
+
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENTES GLOBALES
+   Clases reutilizables que no son puramente utilidades de Tailwind.
+───────────────────────────────────────────────────────────────────────────── */
+
+@layer components {
+
+  /* Párrafo introductorio — más grande y con más peso visual */
+  .lead {
+    font-size:   1.125rem; /* 18px */
+    font-weight: 600;
+  }
+
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -198,7 +210,7 @@
   /* Imágenes */
   img {
     border-radius: 1rem;
-    box-shadow:    0 10px 30px rgba(0,0,0,0.1);
+    box-shadow:    0 10px 30px rgba(0, 0, 0, 0.1);
   }
 
   /* Links */
@@ -210,4 +222,59 @@
       text-decoration: underline;
     }
   }
+
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   REACT-PHONE-NUMBER-INPUT — Overrides globales
+   El wrapper (.PhoneInput) se estiliza desde Inputs.tsx con clases Tailwind.
+   Aquí solo van los selectores internos que Tailwind no puede alcanzar.
+───────────────────────────────────────────────────────────────────────────── */
+
+.PhoneInput {
+  display:     flex;
+  align-items: stretch; /* stretch para que el separador cubra toda la altura */
+}
+
+.PhoneInputCountry {
+  display:         flex;
+  align-items:     center;
+  padding:         0.5rem 0.75rem;
+  border-right:    1px solid var(--color-line);
+  position:        relative;
+  overflow:        hidden;  /* evita que el <select> invisible desborde el área */
+  flex-shrink:     0;
+}
+
+.PhoneInputCountryIcon {
+  display:     block;       /* elimina whitespace de descenso tipográfico */
+  flex-shrink: 0;
+  width:       1.5rem;
+  height:      auto;
+}
+
+.PhoneInputCountrySelectArrow {
+  margin-left: 0.5rem;
+  color:       var(--color-gray-medium);
+}
+
+.PhoneInputCountrySelect {
+  position: absolute;
+  inset:    0;
+  opacity:  0;
+  cursor:   pointer;
+}
+
+.PhoneInputInput {
+  flex:       1;
+  background: transparent;
+  border:     none;
+  outline:    none;
+  padding:    0.5rem 0.75rem;
+  font-size:  1rem;
+  color:      var(--color-main);
+}
+
+.PhoneInputInput::placeholder {
+  color: var(--color-gray-medium);
 }
