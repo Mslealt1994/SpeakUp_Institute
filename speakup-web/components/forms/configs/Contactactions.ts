@@ -265,7 +265,7 @@ export async function sendContactEmail(
   // 2. Enviar con Resend
   try {
     const { error } = await resend.emails.send({
-      from:    "SpeakUp Contact <no-reply@speakup.dev>",    // ← tu dominio verificado en Resend
+      from:    "SpeakUp Contact <no-reply@speakupinstitute.net>",    // ← tu dominio verificado en Resend
       to:      [process.env.CONTACT_EMAIL!],                // ← tu correo del proyecto (variable de entorno)
       replyTo: data.email,
       subject: `[SpeakUp] ${INTENTION_LABELS[data.intention]} — ${data.fullName}`,
