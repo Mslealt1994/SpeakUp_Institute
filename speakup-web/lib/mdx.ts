@@ -7,8 +7,11 @@
 
 import fs from 'fs';
 import path from 'path';
+import type { ReactElement } from 'react';
 import { compileMDX } from 'next-mdx-remote/rsc';
+import { VideoEmbed } from '@/components/ui/VideoEmbed';
 import type { BlogMetadata, BlogCategory } from '@/app/types/blog';
+import Button from '@/components/ui/Button';
 
 // ─── Tipos ─────────────────────────────────────────────────────────────────────
 
@@ -19,26 +22,26 @@ import type { BlogMetadata, BlogCategory } from '@/app/types/blog';
  */
 export interface Post {
   meta: BlogMetadata;
-  content: React.ReactElement;
+  content: ReactElement;
 }
 
 // ─── Constantes ────────────────────────────────────────────────────────────────
 
 const ROOT_CONTENT_DIR = path.join(process.cwd(), 'content', 'blog');
 
+/**
+ * Componentes disponibles dentro del MDX.
+ * La responsabilidad visual queda aquí — el MDX solo declara qué componente usar.
+ */
+const MDX_COMPONENTS = {
+  Video: VideoEmbed,
+  Button: Button
+};
+
 // ─── Helpers privados ──────────────────────────────────────────────────────────
 
-function fileExists(filePath: string): boolean {
-  try {
-    fs.accessSync(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 function getMdxFiles(dirPath: string): string[] {
-  if (!fileExists(dirPath)) return [];
+  if (!fs.existsSync(dirPath)) return [];
   return fs.readdirSync(dirPath).filter((f) => f.endsWith('.mdx'));
 }
 
@@ -48,11 +51,9 @@ function getMdxFiles(dirPath: string): string[] {
  * getPostBySlug
  * Lee y compila un post específico desde /content/{category}/{slug}.mdx
  *
- * El genérico <BlogMetadata> le dice a compileMDX qué forma tiene el frontmatter,
- * de modo que `frontmatter` ya llega tipado — sin casteos manuales.
- *
- * Nota: slug y category NO viven en el frontmatter del .mdx (son datos de ruta),
- * por eso los inyectamos manualmente al construir el objeto meta.
+ * El genérico <Omit<BlogMetadata, 'slug' | 'category'>> le dice a compileMDX qué
+ * forma tiene el frontmatter — slug y category no viven en el frontmatter sino en
+ * la ruta, por eso los inyectamos manualmente al construir el objeto meta.
  */
 export async function getPostBySlug(
   category: BlogCategory,
@@ -61,7 +62,7 @@ export async function getPostBySlug(
   const realSlug = slug.replace(/\.mdx$/, '');
   const filePath = path.join(ROOT_CONTENT_DIR, category, `${realSlug}.mdx`);
 
-  if (!fileExists(filePath)) {
+  if (!fs.existsSync(filePath)) {
     throw new Error(
       `[blog] Post no encontrado → category: "${category}" | slug: "${realSlug}"\n` +
       `Ruta: ${filePath}`
@@ -70,19 +71,14 @@ export async function getPostBySlug(
 
   const fileContent = fs.readFileSync(filePath, { encoding: 'utf8' });
 
-  // Omit<BlogMetadata, 'slug' | 'category'> porque esos dos campos
-  // no están en el frontmatter — los añadimos nosotros desde la ruta.
   const { frontmatter, content } = await compileMDX<Omit<BlogMetadata, 'slug' | 'category'>>({
     source: fileContent,
     options: { parseFrontmatter: true },
+    components: MDX_COMPONENTS,
   });
 
   return {
-    meta: {
-      ...frontmatter,
-      slug: realSlug,
-      category,
-    },
+    meta: { ...frontmatter, slug: realSlug, category },
     content,
   };
 }
@@ -92,7 +88,6 @@ export async function getPostBySlug(
  * Devuelve los metadatos de todos los posts publicados de una categoría,
  * ordenados del más reciente al más antiguo.
  *
- * Usa Promise.all para leer los archivos en paralelo en lugar de en secuencia.
  * draft: true → el post existe pero no aparece en producción.
  */
 export async function getPostsByCategory(
@@ -119,9 +114,8 @@ export async function getPostsByCategory(
  * getAllPosts
  * Agrega los posts publicados de todas las categorías definidas en BlogCategory.
  *
- * Itera sobre un array de categorías conocidas (type-safe) en lugar de
- * leer las carpetas del disco — así TypeScript valida que no uses
- * una categoría que no existe en tu tipo.
+ * Itera sobre un array de categorías conocidas (type-safe) en lugar de leer
+ * carpetas del disco — TypeScript valida que no uses una categoría inexistente.
  */
 export async function getAllPosts(): Promise<BlogMetadata[]> {
   const categories: BlogCategory[] = ['founders-log', 'methodology', 'mindset'];

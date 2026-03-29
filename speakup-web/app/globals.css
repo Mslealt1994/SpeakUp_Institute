@@ -214,7 +214,7 @@
   }
 
   /* Links */
-  a {
+  a:not([class]) {
     color:           var(--color-accent);
     text-decoration: none;
 

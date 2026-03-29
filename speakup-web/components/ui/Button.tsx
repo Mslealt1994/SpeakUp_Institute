@@ -71,6 +71,7 @@ const BASE = [
   "shadow-md",
   "transition-all duration-200",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-secondary",
+   "not-prose",  // ← evita que Tailwind Typography sobreescriba colores cuando está dentro de MDX
 ].join(" ");
 
 // ─── Componente ───────────────────────────────────────────────────────────────
