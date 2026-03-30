@@ -8,8 +8,8 @@ import { useState } from "react";
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { href: "#",     label: "Cursos"    },
-  { href: "#",     label: "Skill Lab" },
+  { href: "/course",     label: "Cursos"    },
+  { href: "/skill-lab",     label: "Skill Lab" },
   { href: "/blog", label: "Blog"      },
   { href: "/about",     label: "Conócenos" },
 ];
