@@ -29,6 +29,8 @@ import {
   Mic2,
   Languages,
   Library,
+  Volume2,
+  PenLine,
 
   // ── Navegación y Conversión ──
   Home,
@@ -39,6 +41,7 @@ import {
   MoveRight,
   Sparkles,
   PlayCircle,
+  TrendingUp,
 
   // ── Dashboard y Usuario ──
   UserCircle,
@@ -48,15 +51,20 @@ import {
   Calendar,
   Settings,
   LogOut,
+  History,
+  Users,
 
   // ── Interfaz y Feedback ──
   Search,
   Mail,
   Lock,
-  CheckCircle2,
+  CircleCheckBig,
   AlertCircle,
   Handshake,
   Gem,
+  Ban,
+  LockKeyhole,
+  KeyRound,
 } from "lucide-react";
 
 // ─── Librería organizada por categoría ───────────────────────────────────────
@@ -87,14 +95,24 @@ export const SpeakUpIcons = {
   /** Lecciones completadas y progreso de lectura */
   lessonDone:   BookOpenCheck,
 
-  /** Secciones de Speaking y práctica fonética */
+  /** Secciones de Speaking y práctica fonética (micrófono) */
   speaking:     Mic2,
+
+  /** Audio y pronunciación — escucha activa y fonética */
+  audio:        Volume2,
+
+  /** Escritura activa / producción escrita */
+  writing:      PenLine,
 
   /** Traducción, glosarios y multilingüismo */
   languages:    Languages,
 
   /** Material descargable y recursos adicionales */
   resources:    Library,
+
+  /** Progreso del estudiante, métricas de mejora continua */
+  progress:     TrendingUp,
+
 
   // ── 2. Navegación y Conversión ────────────────────────────────────────────
   // Uso: navbar, landing pages, botones CTA
@@ -123,6 +141,7 @@ export const SpeakUpIcons = {
   /** Video de introducción o demos de clases */
   playDemo:     PlayCircle,
 
+
   // ── 3. Dashboard y Usuario ────────────────────────────────────────────────
   // Uso: panel del alumno, perfil, gestión de cuenta
 
@@ -147,6 +166,13 @@ export const SpeakUpIcons = {
   /** Salida del sistema — usar con variant="danger" en Button */
   logout:       LogOut,
 
+  /** Historial de actividad del usuario */
+  history:      History,
+
+  /** Comunidad, grupos de práctica y co-creación */
+  community:    Users,
+
+
   // ── 4. Interfaz y Feedback ────────────────────────────────────────────────
   // Uso: formularios, estados de carga, validaciones
 
@@ -160,7 +186,7 @@ export const SpeakUpIcons = {
   password:     Lock,
 
   /** Éxito — tarea enviada o formulario correcto → text-primary */
-  success:      CheckCircle2,
+  success:      CircleCheckBig,
 
   /** Advertencia — errores o notificaciones → text-amber-500 */
   warning:      AlertCircle,
@@ -169,7 +195,16 @@ export const SpeakUpIcons = {
   alliance:     Handshake,
 
   /** Mecenazgo — Usuarios que financian y catalizan la visión */
-  diamond:     Gem,
+  diamond:      Gem,
+
+  /** Acción bloqueada / no permitido */
+  blocked:      Ban,
+
+  /** Seguridad avanzada — autenticación reforzada */
+  secure:       LockKeyhole,
+
+  /** Acceso mediante clave / activación de cuenta */
+  accessKey:    KeyRound,
 
 } as const;
 

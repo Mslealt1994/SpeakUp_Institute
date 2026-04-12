@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -23,6 +25,7 @@ interface BaseProps {
   children: React.ReactNode;
   fullWidth?: boolean;
   className?: string;
+  id?: string;
 }
 
 type ButtonProps =
@@ -39,15 +42,6 @@ type ButtonProps =
     } & React.ButtonHTMLAttributes<HTMLButtonElement>);
 
 // ─── Variantes ────────────────────────────────────────────────────────────────
-/**
- * Cada variante tiene tres capas:
- * 1. Color base
- * 2. hover:bg-* — cambia el fondo al hacer hover
- * 3. hover:scale-105 — escala sutil
- *
- * La sombra base va en BASE para que todos los botones la hereden.
- * disabled, ghost y ghost-light no escalan — no tiene sentido semántico.
- */
 const VARIANTS: Record<ButtonVariant, string> = {
   primary:       "bg-primary   text-white hover:bg-primary-dark   hover:scale-105",
   secondary:     "bg-secondary text-white hover:bg-secondary-dark hover:scale-105",
@@ -61,18 +55,38 @@ const VARIANTS: Record<ButtonVariant, string> = {
 };
 
 // ─── Base classes ─────────────────────────────────────────────────────────────
-/**
- * shadow-md → sombra sutil presente en todos los botones por defecto.
- * Las variantes ghost, ghost-light y disabled la sobreescriben con shadow-none via twMerge.
- */
 const BASE = [
   "inline-flex items-center justify-center gap-2",
   "px-7 py-3 rounded-full font-bold text-sm",
   "shadow-md",
   "transition-all duration-200",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-secondary",
-   "not-prose",  // ← evita que Tailwind Typography sobreescriba colores cuando está dentro de MDX
+  "not-prose",
 ].join(" ");
+
+// ─── Helper: smooth scroll a un ancla interna ─────────────────────────────────
+/**
+ * Dado un href tipo "#curso-preview", busca el elemento con ese id
+ * y hace scroll suave hasta él.
+ * Devuelve `true` si pudo manejar el scroll (para hacer preventDefault).
+ */
+function scrollToAnchor(href: string): boolean {
+  if (!href.startsWith("#")) return false;
+
+  const id = href.slice(1); // quita el "#"
+  const target = document.getElementById(id);
+
+  if (!target) {
+    // El elemento todavía no existe en el DOM — dejamos que Next.js lo maneje
+    console.warn(`[Button] No se encontró el elemento con id="${id}"`);
+    return false;
+  }
+
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+  // Actualiza la URL sin recargar la página
+  window.history.pushState(null, "", href);
+  return true;
+}
 
 // ─── Componente ───────────────────────────────────────────────────────────────
 
@@ -81,6 +95,7 @@ export default function Button({
   children,
   fullWidth = false,
   className,
+  id,
   href,
   target,
   rel,
@@ -102,12 +117,27 @@ export default function Button({
 
   // ── Modo Link ──
   if (href) {
+    const isAnchor = href.startsWith("#");
+
     return (
       <Link
+        id={id}
         href={href}
-        target={target}
-        rel={target === "_blank" ? (rel ?? "noopener noreferrer") : rel}
+        target={isAnchor ? undefined : target}
+        rel={
+          !isAnchor && target === "_blank"
+            ? (rel ?? "noopener noreferrer")
+            : rel
+        }
         className={classes}
+        onClick={
+          isAnchor
+            ? (e) => {
+                e.preventDefault();
+                scrollToAnchor(href);
+              }
+            : undefined
+        }
       >
         {children}
       </Link>
@@ -117,6 +147,7 @@ export default function Button({
   // ── Modo Button ──
   return (
     <button
+      id={id}
       disabled={isDisabled}
       aria-disabled={isDisabled}
       className={classes}

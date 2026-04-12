@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Category, BlogMetadata } from "@/app/types/blog";
+import type { Category, BlogMetadata } from "@/types/blog";
 import Button from "@/components/ui/Button";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
