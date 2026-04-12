@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
 import Container from "@/components/ui/Container";
-import { CATEGORY_LABELS, CATEGORY_SUBTITLES, VALID_CATEGORIES } from "@/lib/blog";
+import {
+  CATEGORY_LABELS,
+  CATEGORY_SUBTITLES,
+  VALID_CATEGORIES,
+} from "@/lib/blog";
 import { getPostsByCategory } from "@/lib/mdx";
 import { BlogCard } from "@/components/blog/Card";
-import type { BlogCategory } from "@/app/types/blog";
+import type { BlogCategory } from "@/types/blog";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -35,8 +39,8 @@ export default async function CategoryPage({ params }: PageProps) {
 
   if (!isBlogCategory(category)) notFound();
 
-  const posts    = await getPostsByCategory(category);
-  const title    = CATEGORY_LABELS[category];
+  const posts = await getPostsByCategory(category);
+  const title = CATEGORY_LABELS[category];
   const subtitle = CATEGORY_SUBTITLES[category];
 
   return (
@@ -45,15 +49,12 @@ export default async function CategoryPage({ params }: PageProps) {
       className="w-full pt-8 pb-10 md:pt-12 md:pb-16"
     >
       <Container>
-
         {/* ── Header ── */}
         <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
           <h1 id="category-heading" className="mb-4">
             {title}
           </h1>
-          <p className="lead text-gray-medium">
-            {subtitle}
-          </p>
+          <p className="lead text-gray-medium">{subtitle}</p>
         </div>
 
         {/* ── Posts ── */}
@@ -73,7 +74,6 @@ export default async function CategoryPage({ params }: PageProps) {
             ))}
           </ul>
         )}
-
       </Container>
     </section>
   );

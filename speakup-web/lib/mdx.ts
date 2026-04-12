@@ -10,7 +10,7 @@ import path from 'path';
 import type { ReactElement } from 'react';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { VideoEmbed } from '@/components/ui/VideoEmbed';
-import type { BlogMetadata, BlogCategory } from '@/app/types/blog';
+import type { BlogMetadata, BlogCategory } from '@/types/blog';
 import Button from '@/components/ui/Button';
 
 // ─── Tipos ─────────────────────────────────────────────────────────────────────

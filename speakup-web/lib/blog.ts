@@ -1,4 +1,4 @@
-import { Category, BlogCategory } from "@/app/types/blog";
+import { Category, BlogCategory } from "@/types/blog";
 
 export const CATEGORY_LABELS: Record<BlogCategory, string> = {
   "founders-log": "Bitácora del Fundador",

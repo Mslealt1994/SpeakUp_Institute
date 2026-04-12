@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Container from "@/components/ui/Container";
 import { VALID_CATEGORIES } from "@/lib/blog";
 import { getPostBySlug } from "@/lib/mdx";
-import type { BlogCategory } from "@/app/types/blog";
+import type { BlogCategory } from "@/types/blog";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -48,16 +48,19 @@ export default async function PostPage({ params }: PageProps) {
   return (
     <Container>
       <article className="max-w-4xl mx-auto mt-8 py-12 bg-white/70 rounded-3xl shadow-lg px-6 md:px-12">
-
         {/* ── Header ── */}
         <header className="flex flex-col gap-6 mb-12">
-          <span className="w-fit px-3 py-1 text-[10px] font-bold uppercase tracking-widest
-                           text-white bg-brand-blue rounded-full">
+          <span
+            className="w-fit px-3 py-1 text-[10px] font-bold uppercase tracking-widest
+                           text-white bg-brand-blue rounded-full"
+          >
             {meta.category}
           </span>
 
-          <h1 className="font-playfair text-center text-4xl md:text-5xl font-black
-                         text-brand-blue leading-tight">
+          <h1
+            className="font-playfair text-center text-4xl md:text-5xl font-black
+                         text-brand-blue leading-tight"
+          >
             {meta.title}
           </h1>
 
@@ -66,8 +69,10 @@ export default async function PostPage({ params }: PageProps) {
           </p>
 
           {/* Metadatos */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400
-                          font-roboto border-y border-slate-100 py-4">
+          <div
+            className="flex flex-wrap items-center gap-4 text-sm text-slate-400
+                          font-roboto border-y border-slate-100 py-4"
+          >
             <span className="font-bold text-slate-600">{meta.author}</span>
             <span aria-hidden>·</span>
             <time dateTime={meta.date}>{formatDate(meta.date)}</time>
@@ -88,13 +93,15 @@ export default async function PostPage({ params }: PageProps) {
         </div>
 
         {/* ── Contenido MDX ── */}
-        <div className="prose prose-slate lg:prose-xl max-w-none
+        <div
+          className="prose prose-slate lg:prose-xl max-w-none
                         prose-headings:font-playfair prose-headings:text-brand-blue prose-headings:font-black
                         prose-p:font-roboto prose-p:text-slate-800 prose-p:leading-relaxed
                         prose-strong:text-brand-blue
                         prose-blockquote:border-l-brand-green prose-blockquote:bg-slate-50
                         prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl
-                        prose-img:rounded-3xl prose-img:shadow-lg">
+                        prose-img:rounded-3xl prose-img:shadow-lg"
+        >
           {content}
         </div>
 
@@ -111,7 +118,6 @@ export default async function PostPage({ params }: PageProps) {
             ))}
           </div>
         </footer>
-
       </article>
     </Container>
   );
