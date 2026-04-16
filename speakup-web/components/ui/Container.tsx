@@ -1,5 +1,5 @@
 // components/layout/Container.tsx
-import { JSX, ReactNode } from "react";
+import React, { ReactNode, forwardRef } from "react";
 
 type Variant =
   | "default" // centrado, max-w-7xl
@@ -17,13 +17,14 @@ type Variant =
 interface ContainerProps {
   children: ReactNode;
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType; 
   variant?: Variant;
   gap?: string;
+  py?: string; 
   id?: string;
 }
 
-const INNER = "relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ";
+const INNER = "relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8";
 
 const variantMap: Record<Variant, string> = {
   default: `${INNER}`,
@@ -39,47 +40,58 @@ const variantMap: Record<Variant, string> = {
   golden: `${INNER} grid grid-cols-1 md:grid-cols-[1fr_1.618fr]`,
 };
 
-export default function Container({
-  children,
-  className,
-  as: Tag = "div",
-  variant = "default",
-  gap = "gap-8",
-  id, // ← desestructurado
-}: ContainerProps) {
-  if (variant === "fullbleed") {
-    return (
-      <Tag id={id} className={`w-full ${className ?? ""}`}>
-        {" "}
-        {/* ← id aquí */}
-        <div className={INNER}>{children}</div>
-      </Tag>
-    );
-  }
+const Container = forwardRef<HTMLElement, ContainerProps>(
+  (
+    {
+      children,
+      className = "",
+      as: Tag = "div",
+      variant = "default",
+      gap = "gap-8",
+      py = "", // por defecto sin padding vertical extra
+      id,
+    },
+    ref,
+  ) => {
+    const isGrid =
+      variant.includes("col") ||
+      variant.startsWith("sidebar") ||
+      variant === "golden";
 
-  if (variant === "fullbleed-raw") {
+    // Lógica de clases base
+    const baseClasses = variantMap[variant] || variantMap.default;
+    const gridClasses = isGrid ? `grid ${gap}` : "";
+
+    // Si es fullbleed, el contenedor externo lleva el ID y el fondo,
+    // pero el interno lleva el centrado
+    if (variant === "fullbleed") {
+      return (
+        <Tag ref={ref} id={id} className={`w-full ${py} ${className}`}>
+          <div className={INNER}>{children}</div>
+        </Tag>
+      );
+    }
+
+    if (variant === "fullbleed-raw") {
+      return (
+        <Tag ref={ref} id={id} className={`w-full ${py} ${className}`}>
+          {children}
+        </Tag>
+      );
+    }
+
     return (
-      <Tag id={id} className={`w-full ${className ?? ""}`}>
-        {" "}
-        {/* ← id aquí */}
+      <Tag
+        ref={ref}
+        id={id}
+        className={`${baseClasses} ${gridClasses} ${py} ${className}`}
+      >
         {children}
       </Tag>
     );
-  }
+  },
+);
 
-  const isGrid =
-    variant.includes("col") ||
-    variant.startsWith("sidebar") ||
-    variant === "golden";
+Container.displayName = "Container";
 
-  return (
-    <Tag
-      id={id}
-      className={`${variantMap[variant]} ${isGrid ? gap : ""} ${className ?? ""}`}
-    >
-      {" "}
-      {/* ← id aquí */}
-      {children}
-    </Tag>
-  );
-}
+export default Container;

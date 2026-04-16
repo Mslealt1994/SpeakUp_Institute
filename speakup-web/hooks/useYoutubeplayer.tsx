@@ -2,22 +2,24 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 
+declare global {
+  interface Window {
+    YT: typeof YT;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
+
 export interface YouTubePlayerOptions {
   videoId: string;
   autoplay?: boolean;
   mute?: boolean;
   loop?: boolean;
   controls?: boolean;
+  startSeconds?: number;
+  endSeconds?: number;
   onReady?: (player: YT.Player) => void;
-  onStateChange?: (state: YT.PlayerState) => void;
+  onStateChange?: (state: number) => void;
   onEnd?: () => void;
-}
-
-declare global {
-  interface Window {
-    YT: typeof YT;
-    onYouTubeIframeAPIReady: () => void;
-  }
 }
 
 const pending: Array<(yt: typeof YT) => void> = [];
@@ -41,15 +43,19 @@ function waitForYT(): Promise<typeof YT> {
 export function useYouTubePlayer(options: YouTubePlayerOptions) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YT.Player | null>(null);
-  const pauseAtRef = useRef<number | null>(null); // ← para pauseAt
+  const pauseAtRef = useRef<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  const videoIdRef = useRef(options.videoId);
+  const startSecondsRef = useRef(options.startSeconds);
+  const endSecondsRef = useRef(options.endSeconds);
+  const isReadyRef = useRef(false);
+
   const {
-    videoId,
     autoplay = false,
-    mute = false,
+    mute: muteOption = false,
     loop = false,
     controls = true,
   } = options;
@@ -57,19 +63,24 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
   const onReadyRef = useRef(options.onReady);
   const onEndRef = useRef(options.onEnd);
   const onStateRef = useRef(options.onStateChange);
+
   useEffect(() => {
     onReadyRef.current = options.onReady;
     onEndRef.current = options.onEnd;
     onStateRef.current = options.onStateChange;
   }, [options.onReady, options.onEnd, options.onStateChange]);
 
-  // Limpia el intervalo de pauseAt cuando el video se detiene
-  const clearPauseInterval = useCallback(() => {
+  // ✅ clearPauseInterval ahora acepta un flag para disparar onEnd
+  // cuando el video se pausa por endSeconds (no llega a ENDED naturalmente)
+  const clearPauseInterval = useCallback((triggerOnEnd = false) => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     pauseAtRef.current = null;
+    if (triggerOnEnd) {
+      onEndRef.current?.();
+    }
   }, []);
 
   useEffect(() => {
@@ -88,19 +99,22 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
       if (destroyed || !containerRef.current) return;
 
       playerRef.current = new YT.Player(containerRef.current, {
-        videoId,
+        videoId: videoIdRef.current,
         playerVars: {
           autoplay: autoplay ? 1 : 0,
-          mute: mute ? 1 : 0,
+          mute: muteOption ? 1 : 0,
           loop: loop ? 1 : 0,
-          playlist: loop ? videoId : undefined,
+          playlist: loop ? videoIdRef.current : undefined,
           controls: controls ? 1 : 0,
           rel: 0,
           modestbranding: 1,
+          start: startSecondsRef.current,
+          end: endSecondsRef.current,
         },
         events: {
           onReady: (e) => {
             if (destroyed) return;
+            isReadyRef.current = true;
             setIsReady(true);
             onReadyRef.current?.(e.target);
           },
@@ -110,11 +124,12 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
             setIsPlaying(playing);
             onStateRef.current?.(e.data);
             if (e.data === YT.PlayerState.ENDED) {
-              clearPauseInterval();
+              // Video terminó naturalmente — disparamos onEnd sin triggerOnEnd
+              // porque clearPauseInterval ya no tiene intervalo activo
+              clearPauseInterval(false);
               onEndRef.current?.();
             }
-            // Si se detiene/pausa manualmente, cancela el pauseAt pendiente
-            if (!playing) clearPauseInterval();
+            if (!playing) clearPauseInterval(false);
           },
         },
       });
@@ -122,24 +137,66 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
 
     return () => {
       destroyed = true;
-      clearPauseInterval();
+      isReadyRef.current = false;
+      clearPauseInterval(false);
       playerRef.current?.destroy();
       playerRef.current = null;
       setIsReady(false);
       setIsPlaying(false);
     };
-  }, [videoId, autoplay, mute, loop, controls, clearPauseInterval]);
+  }, [autoplay, muteOption, loop, controls, clearPauseInterval]);
 
-  // ── Métodos de control ──────────────────────────────────────────────────
+  const isFirstVideoRender = useRef(true);
+  useEffect(() => {
+    videoIdRef.current = options.videoId;
+    startSecondsRef.current = options.startSeconds;
+    endSecondsRef.current = options.endSeconds;
 
-  /** Reproduce desde `startSeconds` y pausa opcionalmente en `endSeconds` */
+    if (isFirstVideoRender.current) {
+      isFirstVideoRender.current = false;
+      return;
+    }
+
+    if (!isReadyRef.current || !playerRef.current) return;
+
+    clearPauseInterval(false);
+
+    playerRef.current.loadVideoById({
+      videoId: options.videoId,
+      startSeconds: options.startSeconds ?? 0,
+      endSeconds: options.endSeconds,
+    });
+
+    if (
+      options.endSeconds !== undefined &&
+      options.endSeconds > (options.startSeconds ?? 0)
+    ) {
+      const p = playerRef.current;
+      pauseAtRef.current = options.endSeconds;
+      intervalRef.current = setInterval(() => {
+        const current = p.getCurrentTime?.() ?? 0;
+        if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
+          p.pauseVideo();
+          // ✅ triggerOnEnd: true — el video llegó al fin definido por endSeconds
+          clearPauseInterval(true);
+        }
+      }, 200);
+    }
+  }, [options.videoId, options.startSeconds, options.endSeconds, clearPauseInterval]);
+
   const playFrom = useCallback(
     (startSeconds: number, endSeconds?: number) => {
       const p = playerRef.current;
       if (!p) return;
-      clearPauseInterval();
-      p.seekTo(startSeconds, true);
-      p.playVideo();
+      clearPauseInterval(false);
+
+      const currentVideoId = p.getVideoData?.()?.video_id;
+      if (currentVideoId === videoIdRef.current) {
+        p.seekTo(startSeconds, true);
+        p.playVideo();
+      } else {
+        p.loadVideoById({ videoId: videoIdRef.current, startSeconds, endSeconds });
+      }
 
       if (endSeconds !== undefined && endSeconds > startSeconds) {
         pauseAtRef.current = endSeconds;
@@ -147,43 +204,70 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
           const current = p.getCurrentTime?.() ?? 0;
           if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
             p.pauseVideo();
-            clearPauseInterval();
+            // ✅ triggerOnEnd: true
+            clearPauseInterval(true);
           }
-        }, 200); // polling cada 200 ms
+        }, 200);
       }
     },
     [clearPauseInterval],
   );
 
-  /** Pausa el video exactamente en `atSeconds` (si ya está reproduciéndose) */
   const pauseAt = useCallback(
     (atSeconds: number) => {
       const p = playerRef.current;
       if (!p) return;
-      clearPauseInterval();
+      clearPauseInterval(false);
       pauseAtRef.current = atSeconds;
       intervalRef.current = setInterval(() => {
         const current = p.getCurrentTime?.() ?? 0;
         if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
           p.pauseVideo();
-          clearPauseInterval();
+          // pauseAt es una pausa de control, no fin de lección — no dispara onEnd
+          clearPauseInterval(false);
         }
       }, 200);
     },
     [clearPauseInterval],
   );
 
-  /** Carga un video diferente sin desmontar el player */
-  const loadVideo = useCallback((newVideoId: string, startSeconds = 0) => {
-    playerRef.current?.loadVideoById({ videoId: newVideoId, startSeconds });
-  }, []);
+  const loadVideo = useCallback(
+    (newVideoId: string, startSeconds = 0, endSeconds?: number) => {
+      const p = playerRef.current;
+      if (!p) return;
+      clearPauseInterval(false);
+      p.loadVideoById({ videoId: newVideoId, startSeconds, endSeconds });
+
+      if (endSeconds !== undefined && endSeconds > startSeconds) {
+        pauseAtRef.current = endSeconds;
+        intervalRef.current = setInterval(() => {
+          const current = p.getCurrentTime?.() ?? 0;
+          if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
+            p.pauseVideo();
+            // ✅ triggerOnEnd: true
+            clearPauseInterval(true);
+          }
+        }, 200);
+      }
+    },
+    [clearPauseInterval],
+  );
+
+  const getDuration = useCallback(
+    () => playerRef.current?.getDuration() ?? 0,
+    [],
+  );
+
+  const getCurrentTime = useCallback(
+    () => playerRef.current?.getCurrentTime() ?? 0,
+    [],
+  );
 
   return {
     containerRef,
-    playerRef, // acceso directo para casos no cubiertos
+    playerRef,
     isReady,
     isPlaying,
-    // Controles básicos
     play: () => playerRef.current?.playVideo(),
     pause: () => playerRef.current?.pauseVideo(),
     stop: () => playerRef.current?.stopVideo(),
@@ -192,10 +276,8 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
     mute: () => playerRef.current?.mute(),
     unMute: () => playerRef.current?.unMute(),
     setPlaybackRate: (r: number) => playerRef.current?.setPlaybackRate(r),
-    // Getters de estado
-    getDuration: () => playerRef.current?.getDuration() ?? 0,
-    getCurrentTime: () => playerRef.current?.getCurrentTime() ?? 0,
-    // Control de segmento ← nuevos
+    getDuration,
+    getCurrentTime,
     playFrom,
     pauseAt,
     loadVideo,
