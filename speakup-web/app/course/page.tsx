@@ -1,9 +1,10 @@
+"use client";
 import Container from "@/components/ui/Container";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { SpeakUpIcons } from "@/lib/icon-map";
 import CoursePreview from "@/components/course/CoursePreview";
-
+import { useState } from "react";
 // ─── Datos estáticos ──────────────────────────────────────────────────────────
 
 const PAIN_POINTS = [
@@ -37,23 +38,72 @@ const PAIN_POINTS = [
 ] as const;
 
 const SPRINTS = [
-  { num: "01", title: "Identidad",   desc: "Preséntate. Define quién eres en inglés." },
-  { num: "02", title: "Entorno",     desc: "Describe tu espacio y lo que te rodea." },
-  { num: "03", title: "Rutina",      desc: "Habla de lo que haces en el día a día." },
-  { num: "04", title: "Interacción", desc: "Conversaciones reales con otras personas." },
-  { num: "05", title: "Mundo real",  desc: "Situaciones que pasan fuera del aula." },
-  { num: "06", title: "Pasado",      desc: "Cuenta experiencias que viviste." },
-  { num: "07", title: "Planes",      desc: "Habla del futuro con claridad." },
-  { num: "08", title: "Integración", desc: "Todo junto. Comunicación funcional.", final: true },
+  {
+    num: "01",
+    title: "Identidad",
+    desc: "Preséntate. Define quién eres en inglés.",
+  },
+  {
+    num: "02",
+    title: "Entorno",
+    desc: "Describe tu espacio y lo que te rodea.",
+  },
+  {
+    num: "03",
+    title: "Rutina",
+    desc: "Habla de lo que haces en el día a día.",
+  },
+  {
+    num: "04",
+    title: "Interacción",
+    desc: "Conversaciones reales con otras personas.",
+  },
+  {
+    num: "05",
+    title: "Mundo real",
+    desc: "Situaciones que pasan fuera del aula.",
+  },
+  { num: "06", title: "Pasado", desc: "Cuenta experiencias que viviste." },
+  { num: "07", title: "Planes", desc: "Habla del futuro con claridad." },
+  {
+    num: "08",
+    title: "Integración",
+    desc: "Todo junto. Comunicación funcional.",
+    final: true,
+  },
 ];
 
 const PISTAS = [
-  { key: "audio",      title: "Sonido",    desc: "Cómo se escucha el idioma. Entrenas el oído antes de hablar." },
-  { key: "logic",      title: "Lógica",    desc: "Cómo se construye una frase. La gramática como ingeniería." },
-  { key: "lessonDone", title: "Input",     desc: "Cómo lo entiendes. Comprensión antes de producción." },
-  { key: "languages",  title: "Contexto",  desc: "Cuándo y cómo usarlo. El idioma vive en situaciones reales." },
-  { key: "premium",    title: "Juego",     desc: "Cómo lo retienes. La memoria funciona con repetición activa." },
-  { key: "writing",    title: "Escritura", desc: "Cómo lo produces. Escribir consolida lo que aprendiste." },
+  {
+    key: "audio",
+    title: "Sonido",
+    desc: "Cómo se escucha el idioma. Entrenas el oído antes de hablar.",
+  },
+  {
+    key: "logic",
+    title: "Lógica",
+    desc: "Cómo se construye una frase. La gramática como ingeniería.",
+  },
+  {
+    key: "lessonDone",
+    title: "Input",
+    desc: "Cómo lo entiendes. Comprensión antes de producción.",
+  },
+  {
+    key: "languages",
+    title: "Contexto",
+    desc: "Cuándo y cómo usarlo. El idioma vive en situaciones reales.",
+  },
+  {
+    key: "premium",
+    title: "Juego",
+    desc: "Cómo lo retienes. La memoria funciona con repetición activa.",
+  },
+  {
+    key: "writing",
+    title: "Escritura",
+    desc: "Cómo lo produces. Escribir consolida lo que aprendiste.",
+  },
 ] as const;
 
 const PASOS_REVELACION = [
@@ -73,6 +123,12 @@ const RESULTADOS = [
 // ─── Componente ───────────────────────────────────────────────────────────────
 
 export default function CoursePage() {
+  const [previewIsOpen, setPreviewIsOpen] = useState(false);
+
+  const handleClosePreview = () => {
+    setPreviewIsOpen((prev) => !prev);
+  };
+
   return (
     <>
       {/* ── Hero ── */}
@@ -84,12 +140,17 @@ export default function CoursePage() {
               No las <span className="text-primary">reglas</span>.
             </h1>
             <p className="text-lg text-gray-medium leading-relaxed max-w-xl">
-              Memorizar no funciona cuando necesitas usar el idioma bajo presión.
-              Aquí construyes la lógica para comunicarte, incluso cuando no recuerdas todo.
+              Memorizar no funciona cuando necesitas usar el idioma bajo
+              presión. Aquí construyes la lógica para comunicarte, incluso
+              cuando no recuerdas todo.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="primary" href="#curso-preview">Empieza a construir</Button>
-              <Button variant="secondary" href="#como-aprendes">Ver metodología</Button>
+              <Button variant="primary" href="#curso-preview">
+                Empieza a construir
+              </Button>
+              <Button variant="secondary" href="#como-aprendes">
+                Ver metodología
+              </Button>
             </div>
           </div>
 
@@ -108,43 +169,70 @@ export default function CoursePage() {
       </Container>
 
       {/* ── Pain Points ── */}
-      <Container as="section" variant="fullbleed" className="bg-soft py-24 overflow-hidden">
-        <h2 className="text-center mb-12 md:mb-16">¿Por qué sientes que no avanzas?</h2>
+      <Container
+        as="section"
+        variant="fullbleed"
+        className="bg-soft py-24 overflow-hidden"
+      >
+        <h2 className="text-center mb-12 md:mb-16">
+          ¿Por qué sientes que no avanzas?
+        </h2>
 
         <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-          {PAIN_POINTS.map(({ id, title, desc, iconIdle, iconHover, hoverIconClass, hoverTitleClass }) => {
-            const IconIdle = SpeakUpIcons[iconIdle];
-            const IconHover = SpeakUpIcons[iconHover];
-            return (
-              <div
-                key={id}
-                className="group/card relative bg-white p-6 md:p-8 rounded-xl shadow-sm space-y-4 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-xl hover:z-10 overflow-hidden"
-              >
+          {PAIN_POINTS.map(
+            ({
+              id,
+              title,
+              desc,
+              iconIdle,
+              iconHover,
+              hoverIconClass,
+              hoverTitleClass,
+            }) => {
+              const IconIdle = SpeakUpIcons[iconIdle];
+              const IconHover = SpeakUpIcons[iconHover];
+              return (
                 <div
-                  aria-hidden
-                  className="absolute top-0 inset-x-0 h-0.5 bg-linear-to-r from-primary to-accent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"
-                />
-                <div className="h-12 w-12 flex items-center justify-center">
-                  <div className="group-hover/card:hidden text-red-500">
-                    <IconIdle size={40} strokeWidth={2} />
+                  key={id}
+                  className="group/card relative bg-white p-6 md:p-8 rounded-xl shadow-sm space-y-4 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-xl hover:z-10 overflow-hidden"
+                >
+                  <div
+                    aria-hidden
+                    className="absolute top-0 inset-x-0 h-0.5 bg-linear-to-r from-primary to-accent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"
+                  />
+                  <div className="h-12 w-12 flex items-center justify-center">
+                    <div className="group-hover/card:hidden text-red-500">
+                      <IconIdle size={40} strokeWidth={2} />
+                    </div>
+                    <div
+                      className={`hidden group-hover/card:block animate-in zoom-in-75 ${hoverIconClass}`}
+                    >
+                      <IconHover size={40} strokeWidth={2.5} />
+                    </div>
                   </div>
-                  <div className={`hidden group-hover/card:block animate-in zoom-in-75 ${hoverIconClass}`}>
-                    <IconHover size={40} strokeWidth={2.5} />
-                  </div>
+                  <h3
+                    className={`text-xl font-bold text-secondary transition-colors ${hoverTitleClass}`}
+                  >
+                    {title}
+                  </h3>
+                  <p className="text-gray-medium leading-relaxed">{desc}</p>
                 </div>
-                <h3 className={`text-xl font-bold text-secondary transition-colors ${hoverTitleClass}`}>
-                  {title}
-                </h3>
-                <p className="text-gray-medium leading-relaxed">{desc}</p>
-              </div>
-            );
-          })}
+              );
+            },
+          )}
         </div>
       </Container>
 
       {/* ── Manifiesto ── */}
-      <Container as="section" variant="fullbleed" className="bg-white py-20 md:py-32 overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center">
+      <Container
+        as="section"
+        variant="fullbleed"
+        className="bg-white py-20 md:py-32 overflow-hidden"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        >
           <div className="w-150 h-150 rounded-full bg-primary/5 blur-[120px]" />
         </div>
 
@@ -155,8 +243,9 @@ export default function CoursePage() {
             <span className="text-primary">Se construye.</span>
           </h2>
           <p className="text-lg md:text-xl text-gray-medium leading-relaxed">
-            Tratamos el lenguaje como una herramienta de ingeniería, no como una lista de vocabulario.
-            Aprendes las piezas, entiendes la lógica de ensamblaje y luego las usas para expresar quién eres realmente.
+            Tratamos el lenguaje como una herramienta de ingeniería, no como una
+            lista de vocabulario. Aprendes las piezas, entiendes la lógica de
+            ensamblaje y luego las usas para expresar quién eres realmente.
           </p>
         </div>
       </Container>
@@ -168,10 +257,20 @@ export default function CoursePage() {
         variant="fullbleed"
         className="bg-secondary text-white py-24 overflow-hidden"
       >
-        <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 w-100 h-100 rounded-full bg-primary/20 blur-[120px]" />
-        <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 w-100 h-100 rounded-full bg-accent/15 blur-[120px]" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -left-24 w-100 h-100 rounded-full bg-primary/20 blur-[120px]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 -right-24 w-100 h-100 rounded-full bg-accent/15 blur-[120px]"
+        />
 
-        <Container as="div" variant="2-col" className="relative z-10 items-center gap-16">
+        <Container
+          as="div"
+          variant="2-col"
+          className="relative z-10 items-center gap-16"
+        >
           <div className="space-y-8">
             <span className="inline-block bg-primary text-white px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest">
               STUDENT_LOG // SESSION 01
@@ -179,11 +278,20 @@ export default function CoursePage() {
             <div className="space-y-4">
               <h2 className="text-white">Protocolo de Entrenamiento Activo</h2>
               <p className="text-white/80 max-w-md leading-relaxed">
-                Ejecuta el ciclo de aprendizaje: captura la intención nativa, descompila la lógica del sistema
-                y valida tu capacidad de respuesta mediante producción escrita funcional.
+                Ejecuta el ciclo de aprendizaje: captura la intención nativa,
+                descompila la lógica del sistema y valida tu capacidad de
+                respuesta mediante producción escrita funcional.
               </p>
             </div>
-            <CoursePreview />
+            <Button
+              variant="primary"
+              icon="play"
+              iconPosition="right"
+              onClick={handleClosePreview}
+            >
+              <span>INICIAR SIMULACIÓN TÉCNICA</span>
+            </Button>
+            {previewIsOpen && <CoursePreview onClose={handleClosePreview} />}
           </div>
 
           <div className="hidden md:block relative">
@@ -205,10 +313,22 @@ export default function CoursePage() {
         <Container as="div" variant="2-col" className="items-center gap-16">
           <div className="grid grid-cols-2 gap-4 order-2 md:order-1">
             <div className="aspect-square rounded-xl overflow-hidden bg-soft relative">
-              <Image src="/course/revelation_a.jpg" alt="Equipo colaborando" fill sizes="25vw" className="object-cover" />
+              <Image
+                src="/course/revelation_a.jpg"
+                alt="Equipo colaborando"
+                fill
+                sizes="25vw"
+                className="object-cover"
+              />
             </div>
             <div className="aspect-square rounded-xl overflow-hidden bg-soft relative translate-y-8">
-              <Image src="/course/revelation_b.jpg" alt="Aprendizaje digital" fill sizes="25vw" className="object-cover" />
+              <Image
+                src="/course/revelation_b.jpg"
+                alt="Aprendizaje digital"
+                fill
+                sizes="25vw"
+                className="object-cover"
+              />
             </div>
           </div>
 
@@ -227,15 +347,22 @@ export default function CoursePage() {
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               {PASOS_REVELACION.map((paso, i) => (
-                <div key={paso} className="bg-white border border-line rounded-xl p-5 flex flex-col gap-3">
+                <div
+                  key={paso}
+                  className="bg-white border border-line rounded-xl p-5 flex flex-col gap-3"
+                >
                   <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {i + 1}
                   </div>
-                  <span className="text-sm text-main leading-relaxed">{paso}</span>
+                  <span className="text-sm text-main leading-relaxed">
+                    {paso}
+                  </span>
                 </div>
               ))}
             </div>
-            <p className="mt-8 text-base font-semibold text-secondary">Eso es aprendizaje funcional.</p>
+            <p className="mt-8 text-base font-semibold text-secondary">
+              Eso es aprendizaje funcional.
+            </p>
           </div>
         </Container>
       </Container>
@@ -247,7 +374,8 @@ export default function CoursePage() {
           <p className="text-gray-medium text-sm leading-relaxed max-w-lg">
             No está organizado por temas.
             <br />
-            Está organizado por <strong className="text-secondary">uso real del idioma</strong>.
+            Está organizado por{" "}
+            <strong className="text-secondary">uso real del idioma</strong>.
             Avanzas a través de Sprints.
           </p>
         </div>
@@ -263,20 +391,28 @@ export default function CoursePage() {
                   : "bg-white border-line border-t-2 border-t-primary",
               ].join(" ")}
             >
-              <span className={`text-xs font-bold uppercase tracking-widest ${final ? "text-primary" : "text-primary-dark"}`}>
+              <span
+                className={`text-xs font-bold uppercase tracking-widest ${final ? "text-primary" : "text-primary-dark"}`}
+              >
                 Sprint {num}
               </span>
-              <span className={`font-headline font-bold italic text-base ${final ? "text-white" : "text-secondary"}`}>
+              <span
+                className={`font-headline font-bold italic text-base ${final ? "text-white" : "text-secondary"}`}
+              >
                 {title}
               </span>
-              <p className={`text-xs leading-relaxed ${final ? "text-white/65" : "text-gray-medium"}`}>
+              <p
+                className={`text-xs leading-relaxed ${final ? "text-white/65" : "text-gray-medium"}`}
+              >
                 {desc}
               </p>
             </div>
           ))}
         </div>
 
-        <p className="text-xs text-gray-medium mt-2 md:hidden">← Desliza para ver los 8 sprints</p>
+        <p className="text-xs text-gray-medium mt-2 md:hidden">
+          ← Desliza para ver los 8 sprints
+        </p>
       </Container>
 
       {/* ── Las 6 pistas ── */}
@@ -289,8 +425,11 @@ export default function CoursePage() {
         <div className="mb-10">
           <h2 className="mb-3">Cómo aprendes: las 6 pistas</h2>
           <p className="text-gray-medium text-sm leading-relaxed max-w-lg">
-            Cada sesión entrena múltiples capas del idioma. No aprendes una cosa a la vez.{" "}
-            <strong className="text-secondary">Aprendes a usar el idioma.</strong>
+            Cada sesión entrena múltiples capas del idioma. No aprendes una cosa
+            a la vez.{" "}
+            <strong className="text-secondary">
+              Aprendes a usar el idioma.
+            </strong>
           </p>
         </div>
 
@@ -305,7 +444,9 @@ export default function CoursePage() {
                 <div className="w-12 h-12 rounded-lg bg-soft flex items-center justify-center text-primary-dark transition-colors group-hover:bg-primary/10">
                   <Icon size={30} strokeWidth={2} />
                 </div>
-                <span className="text-2xl font-headline font-bold text-secondary">{title}</span>
+                <span className="text-2xl font-headline font-bold text-secondary">
+                  {title}
+                </span>
                 <p className="text-base leading-relaxed">{desc}</p>
               </div>
             );
@@ -325,11 +466,20 @@ export default function CoursePage() {
 
           <div className="grid sm:grid-cols-2 gap-3 text-left mb-8">
             {RESULTADOS.map((item) => (
-              <div key={item} className="flex items-start gap-3 bg-white border border-line rounded-xl p-4">
+              <div
+                key={item}
+                className="flex items-start gap-3 bg-white border border-line rounded-xl p-4"
+              >
                 <div className="w-5 h-5 rounded-full bg-primary shrink-0 mt-0.5 flex items-center justify-center">
-                  <SpeakUpIcons.success size={11} strokeWidth={2.5} className="text-white" />
+                  <SpeakUpIcons.success
+                    size={11}
+                    strokeWidth={2.5}
+                    className="text-white"
+                  />
                 </div>
-                <span className="text-sm text-main leading-relaxed">{item}</span>
+                <span className="text-sm text-main leading-relaxed">
+                  {item}
+                </span>
               </div>
             ))}
           </div>
@@ -337,7 +487,8 @@ export default function CoursePage() {
           <div className="border-l-4 border-primary bg-primary/5 rounded-r-xl px-5 py-4 text-left">
             <p className="text-sm text-secondary leading-relaxed">
               No es perfección. Es capacidad de interacción.
-              <br />Y eso, para la mayoría de personas, es exactamente lo que necesitan.
+              <br />Y eso, para la mayoría de personas, es exactamente lo que
+              necesitan.
             </p>
           </div>
         </div>
@@ -346,8 +497,14 @@ export default function CoursePage() {
       {/* ── CTA Final ── */}
       <Container as="section" className="py-24">
         <div className="relative bg-secondary rounded-[3rem] py-20 px-8 md:px-20 text-center overflow-hidden">
-          <div aria-hidden className="pointer-events-none absolute -top-16 -left-16 w-72 h-72 rounded-full bg-primary/25 blur-[100px]" />
-          <div aria-hidden className="pointer-events-none absolute -bottom-16 -right-16 w-72 h-72 rounded-full bg-accent/20 blur-[100px]" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-16 -left-16 w-72 h-72 rounded-full bg-primary/25 blur-[100px]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-16 -right-16 w-72 h-72 rounded-full bg-accent/20 blur-[100px]"
+          />
 
           <div className="relative z-10">
             <h2 className="text-4xl md:text-6xl font-headline font-extrabold italic text-white leading-tight mb-6">
@@ -358,8 +515,10 @@ export default function CoursePage() {
             <p className="text-white/60 text-lg max-w-md mx-auto mb-10 leading-relaxed">
               Entra al sistema y pruébalo. Sin promesas vacías.
             </p>
-            <Button variant="primary" className="rounded-full px-10 py-4 text-base font-bold">
-              <SpeakUpIcons.ctaArrow size={20} strokeWidth={2} className="mr-2" />
+            <Button
+              variant="primary"
+              className="rounded-full px-10 py-4 text-base font-bold"
+            >
               Entra al sistema
             </Button>
           </div>

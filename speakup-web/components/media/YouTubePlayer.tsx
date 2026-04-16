@@ -19,8 +19,6 @@ const ASPECT_CLASSES: Record<string, string> = {
   "1/1": "aspect-square",
 };
 
-// Solo métodos en el handle — el estado (isReady, isPlaying)
-// se pasa como props/callbacks, no como ref
 export interface YouTubePlayerHandle {
   play: () => void;
   pause: () => void;
@@ -28,46 +26,26 @@ export interface YouTubePlayerHandle {
   seek: (seconds: number) => void;
   playFrom: (start: number, end?: number) => void;
   pauseAt: (seconds: number) => void;
-  loadVideo: (videoId: string, startSeconds?: number) => void;
+  loadVideo: (videoId: string, startSeconds?: number, endSeconds?: number) => void;
   setVolume: (volume: number) => void;
   setPlaybackRate: (rate: number) => void;
   getDuration: () => number;
   getCurrentTime: () => number;
 }
 
-export const YouTubePlayer = forwardRef<
-  YouTubePlayerHandle,
-  YouTubePlayerProps
->(function YouTubePlayer(
-  {
-    className,
-    aspectRatio = "16/9",
-    loadingText = "Cargando video...",
-    ...playerOptions
-  },
-  ref,
-) {
-  const {
-    containerRef,
-    isReady,
-    isPlaying,
-    play,
-    pause,
-    stop,
-    seek,
-    playFrom,
-    pauseAt,
-    loadVideo,
-    setVolume,
-    setPlaybackRate,
-    getDuration,
-    getCurrentTime,
-  } = useYouTubePlayer(playerOptions);
-
-  // Solo métodos imperativos — sin estado reactivo
-  useImperativeHandle(
+export const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>(
+  function YouTubePlayer(
+    {
+      className,
+      aspectRatio = "16/9",
+      loadingText = "Cargando video...",
+      ...playerOptions
+    },
     ref,
-    () => ({
+  ) {
+    const {
+      containerRef,
+      isReady,
       play,
       pause,
       stop,
@@ -79,50 +57,57 @@ export const YouTubePlayer = forwardRef<
       setPlaybackRate,
       getDuration,
       getCurrentTime,
-    }),
-    // Las funciones del hook son estables (useCallback), no necesitan re-crearse
-    [
-      play,
-      pause,
-      stop,
-      seek,
-      playFrom,
-      pauseAt,
-      loadVideo,
-      setVolume,
-      setPlaybackRate,
-      getDuration,
-      getCurrentTime,
-    ],
-  );
+    } = useYouTubePlayer(playerOptions);
 
-  return (
-    <div
-      className={cn(
-        "relative w-full overflow-hidden rounded-xl bg-black shadow-2xl",
-        ASPECT_CLASSES[aspectRatio],
-        className,
-      )}
-    >
-      <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+    useImperativeHandle(
+      ref,
+      () => ({
+        play,
+        pause,
+        stop,
+        seek,
+        playFrom,
+        pauseAt,
+        loadVideo,
+        setVolume,
+        setPlaybackRate,
+        getDuration,
+        getCurrentTime,
+      }),
+      [
+        play, pause, stop, seek, playFrom, pauseAt,
+        loadVideo, setVolume, setPlaybackRate, getDuration, getCurrentTime,
+      ],
+    );
 
-      {!isReady && (
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-black/80"
-          role="status"
-          aria-label={loadingText}
-        >
-          <div className="flex flex-col items-center gap-3 text-white/70">
-            <div
-              className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white"
-              aria-hidden="true"
-            />
-            <span className="text-sm" aria-hidden="true">
-              {loadingText}
-            </span>
+    return (
+      <div
+        className={cn(
+          "relative w-full overflow-hidden rounded-xl bg-black shadow-2xl",
+          ASPECT_CLASSES[aspectRatio],
+          className,
+        )}
+      >
+        <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+
+        {!isReady && (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-black/80"
+            role="status"
+            aria-label={loadingText}
+          >
+            <div className="flex flex-col items-center gap-3 text-white/70">
+              <div
+                className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white"
+                aria-hidden="true"
+              />
+              <span className="text-sm" aria-hidden="true">
+                {loadingText}
+              </span>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-});
+        )}
+      </div>
+    );
+  },
+);

@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@/app/globals.css"
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import GeometricBackground from "@/components/ui/GeometricBackground";

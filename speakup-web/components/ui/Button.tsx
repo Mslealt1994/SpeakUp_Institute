@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { SpeakUpIcons, type SpeakUpIconKey } from "@/lib/icon-map";
 
 // ─── Utilidad ─────────────────────────────────────────────────────────────────
 const cn = (...inputs: Parameters<typeof clsx>) => twMerge(clsx(inputs));
@@ -10,48 +11,52 @@ const cn = (...inputs: Parameters<typeof clsx>) => twMerge(clsx(inputs));
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export type ButtonVariant =
-  | "primary"      // Verde SpeakUp — CTA, conversión
-  | "secondary"    // Azul Institucional — exploración, confianza
-  | "warning"      // Ámbar — atención sin castigo
-  | "danger"       // Rojo — acción irreversible
-  | "neutral"      // Gris oscuro — opciones de sistema
-  | "ghost"        // Transparente — jerarquía mínima, sobre fondos claros
-  | "ghost-light"  // Transparente — jerarquía mínima, sobre fondos oscuros
-  | "disabled"     // Gris claro — bloqueado lógicamente
-  | "social";      // Blanco con borde — login social
+  | "primary"
+  | "secondary"
+  | "warning"
+  | "danger"
+  | "neutral"
+  | "ghost"
+  | "ghost-light"
+  | "disabled"
+  | "social";
 
 interface BaseProps {
   variant: ButtonVariant;
   children: React.ReactNode;
   fullWidth?: boolean;
   className?: string;
-  id?: string;
+  icon?: SpeakUpIconKey;
+  iconPosition?: "left" | "right";
 }
 
-type ButtonProps =
-  | (BaseProps & {
-      href: string;
-      target?: "_blank" | "_self" | "_parent" | "_top";
-      rel?: string;
-      disabled?: never;
-    })
-  | (BaseProps & {
-      href?: never;
-      target?: never;
-      rel?: never;
-    } & React.ButtonHTMLAttributes<HTMLButtonElement>);
+type ButtonAsLink = BaseProps &
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+    href: string;
+  };
+
+type ButtonAsButton = BaseProps &
+  React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    href?: never;
+  };
+
+type ButtonProps = ButtonAsLink | ButtonAsButton;
 
 // ─── Variantes ────────────────────────────────────────────────────────────────
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary:       "bg-primary   text-white hover:bg-primary-dark   hover:scale-105",
-  secondary:     "bg-secondary text-white hover:bg-secondary-dark hover:scale-105",
-  warning:       "bg-amber-500 text-white hover:bg-amber-600      hover:scale-105",
-  danger:        "bg-red-600   text-white hover:bg-red-700        hover:scale-105",
-  neutral:       "bg-main      text-white hover:bg-gray-800       hover:scale-105",
-  ghost:         "bg-transparent text-secondary underline-offset-4 hover:underline shadow-none",
-  "ghost-light": "bg-transparent text-white underline-offset-4 hover:text-white/80 hover:underline shadow-none",
-  disabled:      "bg-line text-gray-medium cursor-not-allowed shadow-none pointer-events-none",
-  social:        "bg-white text-main border border-line hover:bg-secondary hover:text-white hover:scale-105",
+  primary: "bg-primary   text-white hover:bg-primary-dark   hover:scale-105",
+  secondary: "bg-secondary text-white hover:bg-secondary-dark hover:scale-105",
+  warning: "bg-amber-500 text-white hover:bg-amber-600      hover:scale-105",
+  danger: "bg-red-600   text-white hover:bg-red-700        hover:scale-105",
+  neutral: "bg-main      text-white hover:bg-gray-800       hover:scale-105",
+  ghost:
+    "bg-transparent text-secondary underline-offset-4 hover:underline shadow-none",
+  "ghost-light":
+    "bg-transparent text-white underline-offset-4 hover:text-white/80 hover:underline shadow-none",
+  disabled:
+    "bg-line text-gray-medium cursor-not-allowed shadow-none pointer-events-none",
+  social:
+    "bg-white text-main border border-line hover:bg-secondary hover:text-white hover:scale-105",
 };
 
 // ─── Base classes ─────────────────────────────────────────────────────────────
@@ -65,25 +70,18 @@ const BASE = [
 ].join(" ");
 
 // ─── Helper: smooth scroll a un ancla interna ─────────────────────────────────
-/**
- * Dado un href tipo "#curso-preview", busca el elemento con ese id
- * y hace scroll suave hasta él.
- * Devuelve `true` si pudo manejar el scroll (para hacer preventDefault).
- */
 function scrollToAnchor(href: string): boolean {
   if (!href.startsWith("#")) return false;
 
-  const id = href.slice(1); // quita el "#"
+  const id = href.slice(1);
   const target = document.getElementById(id);
 
   if (!target) {
-    // El elemento todavía no existe en el DOM — dejamos que Next.js lo maneje
     console.warn(`[Button] No se encontró el elemento con id="${id}"`);
     return false;
   }
 
   target.scrollIntoView({ behavior: "smooth", block: "start" });
-  // Actualiza la URL sin recargar la página
   window.history.pushState(null, "", href);
   return true;
 }
@@ -97,16 +95,13 @@ export default function Button({
   className,
   id,
   href,
-  target,
-  rel,
+  icon,
+  iconPosition = "left",
   ...props
 }: ButtonProps) {
-  const isDisabled =
-    variant === "disabled" ||
-    ("disabled" in props &&
-      (props as React.ButtonHTMLAttributes<HTMLButtonElement>).disabled);
-
-  const resolvedVariant = isDisabled ? "disabled" : variant;
+  const isActuallyDisabled =
+    variant === "disabled" || ("disabled" in props && props.disabled);
+  const resolvedVariant = isActuallyDisabled ? "disabled" : variant;
 
   const classes = cn(
     BASE,
@@ -115,20 +110,32 @@ export default function Button({
     className,
   );
 
+  const Icon = icon ? SpeakUpIcons[icon] : null;
+
+  const content = (
+    <>
+      {Icon && iconPosition === "left" && (
+        <Icon size={20} strokeWidth={2.5} aria-hidden="true" />
+      )}
+      <span>{children}</span>
+      {Icon && iconPosition === "right" && (
+        <Icon size={20} strokeWidth={2.5} aria-hidden="true" />
+      )}
+    </>
+  );
+
   // ── Modo Link ──
   if (href) {
+    const { target, rel, href: _href, ...rest } = props as ButtonAsLink;
     const isAnchor = href.startsWith("#");
+    const isExternal = href.startsWith("http");
 
     return (
       <Link
         id={id}
         href={href}
         target={isAnchor ? undefined : target}
-        rel={
-          !isAnchor && target === "_blank"
-            ? (rel ?? "noopener noreferrer")
-            : rel
-        }
+        rel={isExternal ? (rel ?? "noopener noreferrer") : rel}
         className={classes}
         onClick={
           isAnchor
@@ -138,22 +145,26 @@ export default function Button({
               }
             : undefined
         }
+        {...rest}
       >
-        {children}
+        {content}
       </Link>
     );
   }
 
   // ── Modo Button ──
+  const { type = "button", ...rest } = props as ButtonAsButton;
+
   return (
     <button
       id={id}
-      disabled={isDisabled}
-      aria-disabled={isDisabled}
+      type={type}
+      disabled={isActuallyDisabled}
+      aria-disabled={isActuallyDisabled}
       className={classes}
-      {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+      {...rest}
     >
-      {children}
+      {content}
     </button>
   );
 }

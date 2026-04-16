@@ -1,13 +1,29 @@
 [
   {
-    
-    "id": "Democourse",
-    "title": "Yo existo en inglés",
+    "id": "lesson-1-p1",
+    "title": "Yo existo en inglés - Parte 1",
     "videoData": {
-      "videoId": "Wd1aXl4KbeA",
-      "autoplay": false,
-      "mute": false,
-      "controls": true
+      "videoId": "WH9xGn5cIkQ",
+      "startSeconds": 82,
+      "endSeconds": 83
+    }
+  },
+  {
+    "id": "lesson-1-p2",
+    "title": "Yo existo en inglés - Parte 2",
+    "videoData": {
+      "videoId": "51KUocErpj0",
+      "startSeconds": 24,
+      "endSeconds": 26
+    }
+  },
+  {
+    "id": "lesson-1-p3",
+    "title": "Yo existo en inglés - Parte 3",
+    "videoData": {
+      "videoId": "rSzn7pxE6hA",
+      "startSeconds": 539,
+      "endSeconds": 541
     }
   }
 ]
