@@ -1,26 +1,7 @@
-/// <reference types="youtube" />
 "use client";
+
 import { useEffect, useRef, useState, useCallback } from "react";
-
-declare global {
-  interface Window {
-    YT: typeof YT;
-    onYouTubeIframeAPIReady: () => void;
-  }
-}
-
-export interface YouTubePlayerOptions {
-  videoId: string;
-  autoplay?: boolean;
-  mute?: boolean;
-  loop?: boolean;
-  controls?: boolean;
-  startSeconds?: number;
-  endSeconds?: number;
-  onReady?: (player: YT.Player) => void;
-  onStateChange?: (state: number) => void;
-  onEnd?: () => void;
-}
+import { YouTubePlayerOptions } from "@/types/player";
 
 const pending: Array<(yt: typeof YT) => void> = [];
 
@@ -70,8 +51,6 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
     onStateRef.current = options.onStateChange;
   }, [options.onReady, options.onEnd, options.onStateChange]);
 
-  // ✅ clearPauseInterval ahora acepta un flag para disparar onEnd
-  // cuando el video se pausa por endSeconds (no llega a ENDED naturalmente)
   const clearPauseInterval = useCallback((triggerOnEnd = false) => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -124,8 +103,6 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
             setIsPlaying(playing);
             onStateRef.current?.(e.data);
             if (e.data === YT.PlayerState.ENDED) {
-              // Video terminó naturalmente — disparamos onEnd sin triggerOnEnd
-              // porque clearPauseInterval ya no tiene intervalo activo
               clearPauseInterval(false);
               onEndRef.current?.();
             }
@@ -177,7 +154,6 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
         const current = p.getCurrentTime?.() ?? 0;
         if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
           p.pauseVideo();
-          // ✅ triggerOnEnd: true — el video llegó al fin definido por endSeconds
           clearPauseInterval(true);
         }
       }, 200);
@@ -204,7 +180,6 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
           const current = p.getCurrentTime?.() ?? 0;
           if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
             p.pauseVideo();
-            // ✅ triggerOnEnd: true
             clearPauseInterval(true);
           }
         }, 200);
@@ -223,7 +198,6 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
         const current = p.getCurrentTime?.() ?? 0;
         if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
           p.pauseVideo();
-          // pauseAt es una pausa de control, no fin de lección — no dispara onEnd
           clearPauseInterval(false);
         }
       }, 200);
@@ -244,7 +218,6 @@ export function useYouTubePlayer(options: YouTubePlayerOptions) {
           const current = p.getCurrentTime?.() ?? 0;
           if (pauseAtRef.current !== null && current >= pauseAtRef.current) {
             p.pauseVideo();
-            // ✅ triggerOnEnd: true
             clearPauseInterval(true);
           }
         }, 200);
