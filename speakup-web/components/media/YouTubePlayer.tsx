@@ -1,31 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { forwardRef, useImperativeHandle, useEffect, useRef } from "react";
-import {
-  useYouTubePlayer,
-  YouTubePlayerOptions,
-} from "@/hooks/useYoutubeplayer";
+import { useYouTubePlayer } from "@/hooks/useYoutubeplayer";
+import { YouTubePlayerOptions, YouTubePlayerHandle } from "@/types/player";
 import { cn } from "@/lib/utils";
-
-export interface YouTubePlayerHandle {
-  play: () => void;
-  pause: () => void;
-  stop: () => void;
-  seek: (seconds: number) => void;
-  playFrom: (startSeconds: number, endSeconds?: number) => void;
-  pauseAt: (atSeconds: number) => void;
-  loadVideo: (
-    videoId: string,
-    startSeconds?: number,
-    endSeconds?: number,
-  ) => void;
-  setVolume: (volume: number) => void;
-  setPlaybackRate: (rate: number) => void;
-  getDuration: () => number;
-  getCurrentTime: () => number;
-  isReady: () => boolean;
-  isPlaying: () => boolean;
-}
 
 interface YouTubePlayerProps extends Omit<
   YouTubePlayerOptions,
@@ -63,9 +42,6 @@ export const YouTubePlayer = forwardRef<
   },
   ref,
 ) {
-  // ✅ Desestructuración completa: isReady/isPlaying son booleans primitivos,
-  // no propiedades de un objeto que contiene refs.
-  // Las funciones son useCallback estables → identidad fija entre renders.
   const {
     containerRef,
     isReady,
@@ -83,8 +59,8 @@ export const YouTubePlayer = forwardRef<
     getCurrentTime,
   } = useYouTubePlayer(playerOptions);
 
-  // ── onTimeUpdate ──────────────────────────────────────────────────────
   const onTimeUpdateRef = useRef(onTimeUpdate);
+
   useEffect(() => {
     onTimeUpdateRef.current = onTimeUpdate;
   }, [onTimeUpdate]);
@@ -99,19 +75,12 @@ export const YouTubePlayer = forwardRef<
     return () => clearInterval(id);
   }, [isReady, isPlaying, getCurrentTime, timeUpdateIntervalMs]);
 
-  // ── Handle imperativo ──────────────────────────────────────────────────
   useImperativeHandle(
     ref,
     () => ({
-      play: () => {
-        if (isReady) play();
-      },
-      pause: () => {
-        if (isReady) pause();
-      },
-      stop: () => {
-        if (isReady) stop();
-      },
+      play: () => isReady && play(),
+      pause: () => isReady && pause(),
+      stop: () => isReady && stop(),
       seek: (s) => {
         if (!isReady) return;
         seek(s);
@@ -122,40 +91,16 @@ export const YouTubePlayer = forwardRef<
         playFrom(s, e);
         onTimeUpdateRef.current?.(s);
       },
-      pauseAt: (s) => {
-        if (isReady) pauseAt(s);
-      },
-      loadVideo: (id, s, e) => {
-        if (isReady) loadVideo(id, s, e);
-      },
-      setVolume: (v) => {
-        if (isReady) setVolume(v);
-      },
-      setPlaybackRate: (r) => {
-        if (isReady) setPlaybackRate(r);
-      },
+      pauseAt: (s) => isReady && pauseAt(s),
+      loadVideo: (id, s, e) => isReady && loadVideo(id, s, e),
+      setVolume: (v) => isReady && setVolume(v),
+      setPlaybackRate: (r) => isReady && setPlaybackRate(r),
       getDuration: () => (isReady ? getDuration() : 0),
       getCurrentTime: () => (isReady ? getCurrentTime() : 0),
       isReady: () => isReady,
       isPlaying: () => isPlaying,
     }),
-    // ✅ isReady dispara la recreación del handle; las funciones son estables
-    // y no necesitan estar en deps (misma referencia entre renders)
-    [
-      isReady,
-      isPlaying,
-      play,
-      pause,
-      stop,
-      seek,
-      playFrom,
-      pauseAt,
-      loadVideo,
-      setVolume,
-      setPlaybackRate,
-      getDuration,
-      getCurrentTime,
-    ],
+    [isReady, isPlaying],
   );
 
   return (
@@ -166,18 +111,14 @@ export const YouTubePlayer = forwardRef<
         className,
       )}
     >
-      {/* Capa 1: Video */}
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
-      {/* Capa 2: Overlay del padre — solo aparece cuando el player está listo.
-            ✅ isReady es boolean primitivo, no acceso a ref durante render */}
       {isReady && children && (
         <div className="absolute inset-0 z-10 pointer-events-none">
           {children}
         </div>
       )}
 
-      {/* Capa 3: Loading */}
       {!isReady && (
         <div
           className="absolute inset-0 z-20 flex items-center justify-center bg-black/80 backdrop-blur-sm"
